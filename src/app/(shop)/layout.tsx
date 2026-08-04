@@ -46,7 +46,7 @@ export default async function ShopLayout({
         data-voice-agent-id="agent_4652aa787f86fefb91e7e8b1ec"
         data-title="¿En qué te podemos ayudar?"
         data-fab-text="¿Necesitás ayuda?"
-        data-bot-name={`Asistente ${brand.name}`}
+        data-bot-name="Bart"
         data-popup-message="¿Buscás un modelo en particular? Preguntame."
         data-show-ai-popup="true"
         data-show-ai-popup-time="6"
