@@ -1,0 +1,135 @@
+@import "tailwindcss";
+
+/* ---------------------------------------------------------------
+   Tokens de diseño — CLAUDE.md §3
+   Los valores viven acá; brand.config.ts define cuáles se pisan
+   por marca (por ahora, solo --accent y --theme).
+   --------------------------------------------------------------- */
+
+@theme {
+  --color-ink: #0b0d10;
+  --color-surface: #14181d;
+  --color-line: #262d36;
+  --color-paper: #f5f7fa;
+  --color-muted: #8a94a3;
+  --color-accent: #3b82f6;
+  --color-ok: #22c55e;
+  --color-warn: #f59e0b;
+
+  /* Las --ff-* las inyecta next/font desde layout.tsx.
+     Ojo: NO llamarlas --font-display / --font-sans o se auto-referencian
+     con las claves de Tailwind y la cascada se rompe en silencio. */
+  --font-display: var(--ff-display), "Arial Narrow", system-ui, sans-serif;
+  --font-sans: var(--ff-body), system-ui, -apple-system, sans-serif;
+
+  /* Altura del header fijo. Se usa para el scroll-margin de las anclas. */
+  --spacing-header: 3.5rem; /* 56 px */
+}
+
+/* ---------------------------------------------------------------
+   Base
+   --------------------------------------------------------------- */
+
+* {
+  min-width: 0; /* corta desbordes de grid/flex antes de que aparezcan */
+}
+
+html {
+  /* Sin scroll horizontal. Nunca. CLAUDE.md §1 */
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background: var(--color-ink);
+  color: var(--color-paper);
+  font-family: var(--font-sans);
+  overflow-x: hidden;
+  /* La barra de acción fija del detalle y el FAB no deben tapar contenido. */
+  padding-bottom: env(safe-area-inset-bottom);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ---------------------------------------------------------------
+   Accesibilidad — piso no negociable de CLAUDE.md §3
+   --------------------------------------------------------------- */
+
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Nada de outline fantasma al tocar con el dedo. */
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Quita el resaltado azul de iOS al tocar. */
+a,
+button {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ---------------------------------------------------------------
+   Utilidades propias
+   --------------------------------------------------------------- */
+
+/* Área táctil mínima de 44 px sin obligar a que el elemento se vea de 44 px. */
+@utility tap {
+  position: relative;
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 50% 50% 50% 50%;
+    min-width: 44px;
+    min-height: 44px;
+    translate: -50% -50%;
+  }
+}
+
+/* Scroll horizontal contenido: solo dentro de la fila que lo declara. */
+@utility rail {
+  display: flex;
+  gap: 0.75rem;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  overscroll-behavior-x: contain;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+  > * {
+    scroll-snap-align: start;
+    flex: 0 0 auto;
+  }
+}
+
+@utility skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 100;
+  &:focus {
+    left: 0.5rem;
+    top: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    background: var(--color-accent);
+    color: white;
+    border-radius: 6px;
+  }
+}

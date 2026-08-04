@@ -1,0 +1,44 @@
+{
+  "name": "IPHONEX10 · Tecnología con precio claro",
+  "short_name": "IPHONEX10",
+  "description": "Celulares, notebooks, consolas y accesorios. Precios actualizados, stock real y atención directa por WhatsApp.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0B0D10",
+  "theme_color": "#0B0D10",
+  "lang": "es-AR",
+  "dir": "ltr",
+  "categories": ["shopping"],
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Ver catálogo",
+      "url": "/productos"
+    },
+    {
+      "name": "Mi pedido",
+      "url": "/carrito"
+    }
+  ]
+}
