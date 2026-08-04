@@ -13,6 +13,13 @@ import { WhatsAppIcon } from "@/components/ui/icons";
  * burbuja de aviso. Apilarlo arriba no sirve: la burbuja usa `bottom: 90px`
  * en móvil, justo donde caería este botón.
  *
+ * El z-index alto no es capricho. Retell envuelve su botón en un
+ * `_fabWrapBase` de ancho completo (359 px en un viewport de 390) que
+ * reactiva `pointer-events: auto` sobre el `pointer-events: none` de su
+ * contenedor. Esa franja invisible se traga los toques de todo el borde
+ * inferior, así que hay que quedar por encima de sus 999999 o el botón
+ * se ve pero no responde.
+ *
  * El número sale de store_config para que el dueño lo cambie desde el panel
  * sin tocar código; brand.config.ts es solo el fallback.
  */
@@ -26,7 +33,7 @@ export default function WhatsAppFab({ whatsapp }: { whatsapp?: string }) {
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Escribinos por WhatsApp"
-      className="fixed left-4 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-[#25D366] text-white shadow-lg shadow-black/40 transition-transform active:scale-95"
+      className="fixed left-4 z-[1000000] flex h-14 w-14 items-center justify-center rounded-full bg-[#25D366] text-white shadow-lg shadow-black/40 transition-transform active:scale-95"
       style={{ bottom: "calc(1rem + env(safe-area-inset-bottom))" }}
     >
       <WhatsAppIcon />
