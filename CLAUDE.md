@@ -2,7 +2,7 @@
 
 > Plantilla de tienda online liviana para comercios de tecnología.
 > Producto de **Gestión Inteligente** (Nicolás). Instancia demo: **IPHONEX10**.
-> Versión del documento: `v1.6.0` · Última actualización: 2026-08-04
+> Versión del documento: `v1.7.0` · Última actualización: 2026-08-04
 
 ---
 
@@ -366,7 +366,7 @@ Ruta crítica: F2 → F3 → F4. Si el tiempo aprieta, F5 se reduce a **una sola
 | F0 Definición | 🟢 Terminada | 2026-08-03 | CLAUDE.md v1.3.0 + SPEC.md v1.0.0. Falta: crear cuenta de Netlify (bloquea F1) |
 | F1 Fundaciones | 🟡 En curso | 2026-08-03 | Código escrito: chasis, tokens, PWA, `netlify.toml`. **Falta verificar:** `npm install` + build + prueba en teléfono real. Sigue faltando la cuenta de Netlify |
 | F2 Datos | 🟢 Terminada | 2026-08-04 | Proyecto `iphonex10` en sa-east-1. 7 tablas + vista + RLS + bucket. Seed: 12 categorías, 42 productos, 88 colores, 46 capacidades. Tipos y `pricing.ts` con casos verificados |
-| F3 Catálogo | 🟡 En curso | 2026-08-04 | Home, listado con filtros, detalle con variantes, SEO e ISR. Precio en pesos con cotización automática del blue (`lib/exchange.ts`). `npm run build` pasa: 42 fichas pre-generadas con ISR de 60 s. **Falta:** prueba en teléfono real. Sin fotos en el bucket todavía |
+| F3 Catálogo | 🟡 En curso | 2026-08-04 | Home, listado con filtros, detalle con variantes, SEO e ISR. Precio en pesos con cotización automática del blue (`lib/exchange.ts`). Fotos reales cargadas: 9 imágenes en `public/productos/` repartidas entre los 6 iPhones, más el banner propio del hero. **Falta:** prueba en teléfono real, revisar que cada foto esté en el modelo correcto, y fotos para las otras 11 categorías |
 | F4 Carrito | ⚪ Pendiente | — | |
 | F5 Admin | ⚪ Pendiente | — | |
 | F6 Pulido | ⚪ Pendiente | — | |
@@ -421,6 +421,10 @@ Leyenda: ⚪ pendiente · 🟡 en curso · 🟢 terminada · 🔴 bloqueada
 | 38 | El botón de WhatsApp pasa a la **izquierda** y sube a `z-index: 1000000` | Retell se ancla abajo a la derecha con `z-index: 999999` y su burbuja usa `bottom: 90px` en móvil, así que apilarlo arriba tampoco servía. Y moverlo a la izquierda no alcanzó: el `_fabWrapBase` de Retell ocupa el ancho completo (359 px de 390) y reactiva `pointer-events: auto`, con lo que la franja inferior entera se traga los toques. El botón se veía pero no respondía | 2026-08-04 |
 | 39 | La base de conocimiento del asistente es **el endpoint, no el prompt** | Con el catálogo escrito en el prompt, el agente contestó lo contrario que la base: dijo que el iPhone 17 Pro de 256 GB no tenía stock (tiene) y ofreció el de 512 en un color inexistente. Un prompt es texto congelado y el catálogo se mueve todos los días con la cotización. `/api/agent/catalog` reusa `catalog.ts` y `pricing.ts`, así que el chat lee la misma fuente que la web | 2026-08-04 |
 | 40 | `brand.url` pasa a `https://www.gestionint.site` | Seguía apuntando al dominio de Netlify que nunca existió. Alimenta `metadataBase`, el OG, el sitemap y las URLs que el asistente le pasa al cliente: cada link compartido por WhatsApp iba a la nada. El canónico es con `www` — sin él responde 308 | 2026-08-04 |
+| 41 | Las fotos reales viven en `public/productos/`, no en el bucket | `storage_path` que arranca con `/` se sirve desde `public/`; el resto sigue armando la URL del bucket. La base sigue siendo la fuente de verdad de qué foto es de qué producto: migrar una al bucket es editar su `storage_path` y nada más. De paso ahorra egreso del free tier y una request cross-origin en el LCP | 2026-08-04 |
+| 42 | Las fotos se normalizan sobre un fondo generado, no se recortan | Son fotos de local, con encuadres y fondos distintos. Cuadrarlas a 1200×1200 sobre el degradado de los tokens deja la grilla pareja sin cortarle el sujeto a ninguna. Todas quedan ≤150 KB en WebP, dentro del presupuesto de §6 | 2026-08-04 |
+| 43 | El hero usa un banner propio generado, no una foto de producto | Una foto de local arriba de todo compite con la grilla de destacados y pesa. El banner es un degradado con el acento y una silueta insinuada: 11 KB y el copy se lee sobre el sector oscuro. `store_config.banner_path` lo pisa cuando el cliente sube el suyo | 2026-08-04 |
+| 44 | El OG de la ficha publica la primera foto, en URL absoluta | El canal del rubro es WhatsApp: un link pegado en un chat sin imagen se ve como spam. Las rutas relativas no las resuelve ni WhatsApp ni Google, por eso `absoluteImageUrl()` antepone `brand.url` | 2026-08-04 |
 
 ---
 

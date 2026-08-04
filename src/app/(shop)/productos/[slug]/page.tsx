@@ -5,6 +5,7 @@ import brand from "@/brand.config";
 import ProductVariants from "@/components/shop/ProductVariants";
 import { ChevronLeftIcon } from "@/components/ui/icons";
 import { getAllProductSlugs, getProductBySlug, getStoreContext } from "@/lib/catalog";
+import { absoluteImageUrl } from "@/lib/images";
 import { formatCapacity, usdToArs } from "@/lib/pricing";
 import { rateLabel } from "@/lib/exchange";
 
@@ -39,6 +40,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     product.description ||
     `${product.name} con precio actualizado y stock real. Consultá por WhatsApp.`;
 
+  // El canal del rubro es WhatsApp: el link pegado en un chat tiene que
+  // mostrar la foto del producto, no un rectángulo vacío.
+  const og = absoluteImageUrl(product.images[0]?.storage_path, brand.url);
+
   return {
     title,
     description,
@@ -48,6 +53,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title,
       description,
       url: `/productos/${product.slug}`,
+      images: og ? [{ url: og, width: 1200, height: 1200, alt: title }] : undefined,
     },
   };
 }
@@ -188,6 +194,10 @@ function ProductJsonLd({
         },
       ];
 
+  const images = product.images
+    .map((i) => absoluteImageUrl(i.storage_path, brand.url))
+    .filter((u): u is string => Boolean(u));
+
   const data = {
     "@context": "https://schema.org",
     "@type": "Product",
@@ -197,6 +207,7 @@ function ProductJsonLd({
     brand: { "@type": "Brand", name: product.brand },
     category: product.category_name,
     color: product.allColors.map((c) => c.name).join(", ") || undefined,
+    image: images.length ? images : undefined,
     offers,
   };
 

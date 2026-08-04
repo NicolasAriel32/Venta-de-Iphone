@@ -1,7 +1,12 @@
+import Image from "next/image";
 import Link from "next/link";
 import brand from "@/brand.config";
 import ProductCard from "@/components/shop/ProductCard";
 import { getCategories, getFeatured, getStoreContext, REVALIDATE_SECONDS } from "@/lib/catalog";
+import { imageUrl } from "@/lib/images";
+
+/** Banner propio que viaja con el repo. Se usa si `store_config.banner_path` está vacío. */
+const DEFAULT_BANNER = "/banner.webp";
 
 export const revalidate = 60;
 
@@ -16,6 +21,7 @@ export default async function HomePage() {
 
   const usdRate = rate.value;
   const storeName = config?.store_name || brand.name;
+  const bannerSrc = imageUrl(config?.banner_path) ?? DEFAULT_BANNER;
   const notes = {
     warranty: config?.warranty_note || brand.notes.warranty,
     shipping: config?.shipping_note || brand.notes.shipping,
@@ -27,7 +33,22 @@ export default async function HomePage() {
       {/* Hero — banner único, no carrusel (decisión 04) */}
       <section className="mt-4">
         <div className="relative overflow-hidden rounded-2xl border border-line bg-surface">
-          <div className="aspect-[16/9] w-full bg-gradient-to-br from-line/50 via-surface to-ink" />
+          <div className="relative aspect-[16/9] w-full">
+            <Image
+              src={bannerSrc}
+              alt=""
+              aria-hidden
+              fill
+              priority
+              sizes="(max-width: 768px) 100vw, 720px"
+              className="object-cover"
+            />
+          </div>
+          {/* Velo hacia abajo: el copy se apoya sobre el sector oscuro */}
+          <div
+            aria-hidden
+            className="absolute inset-0 bg-gradient-to-t from-ink via-ink/60 to-transparent"
+          />
           <div className="absolute inset-0 flex flex-col justify-end gap-3 p-5">
             <h1 className="font-display text-2xl leading-tight font-bold text-paper">
               {config?.banner_title || brand.tagline}
