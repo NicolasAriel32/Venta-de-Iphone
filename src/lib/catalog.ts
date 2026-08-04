@@ -190,6 +190,122 @@ export async function getProducts(filters: CatalogFilters = {}): Promise<Catalog
   };
 }
 
+// ------------------------------------------------------- búsqueda por términos
+
+/**
+ * Palabras que no aportan a la búsqueda. Se comparan sin acentos.
+ *
+ * No incluye "celular", "notebook" ni similares a propósito: esos sí pueden
+ * coincidir con el nombre de una categoría.
+ */
+const STOPWORDS = new Set([
+  "de", "del", "la", "el", "los", "las", "un", "una", "unos", "unas", "con",
+  "para", "por", "en", "al", "que", "tenes", "tienes", "tiene", "hay", "precio",
+  "precios", "cuesta", "cuanto", "sale", "vale", "stock", "modelo", "disponible",
+  "quiero", "busco", "necesito", "me", "mi", "tu", "su", "es", "esta", "este",
+  "cual", "cuales", "algun", "alguna", "y", "o", "a",
+]);
+
+/** Números que son capacidad, no modelo. `iPhone 17` sí; `256` no. */
+const CAPACITY_NUMBERS = new Set(["32", "64", "128", "256", "512", "1024", "2048"]);
+
+/** "256 GB", "512 gigas", "1 TB" — la capacidad no vive en `products`. */
+const CAPACITY_UNITS = /\b\d+\s*(gb|gigas?|gigabytes?|tb|teras?|terabytes?)\b/gi;
+
+/**
+ * Minúsculas y sin acentos, solo para comparar contra STOPWORDS.
+ *
+ * El rango de marcas diacríticas se arma con `RegExp` en vez de un literal:
+ * escritas a mano son caracteres invisibles en el fuente y cualquier
+ * herramienta que normalice el archivo las rompe sin dejar rastro.
+ */
+const DIACRITICS = new RegExp("[\\u0300-\\u036f]", "g");
+
+function fold(term: string): string {
+  return term.normalize("NFD").replace(DIACRITICS, "").toLowerCase();
+}
+
+/**
+ * Parte la consulta en términos útiles.
+ *
+ * El asistente pregunta como habla un cliente —"iPhone 17 Pro de 256 gigas"—
+ * y la capacidad está en `product_capacities`, no en el nombre. Buscar la
+ * frase entera con un `ilike` no encuentra nada y el chat termina diciendo
+ * que no tiene un producto que sí tiene.
+ *
+ * Los términos se dejan con acentos: `ilike` es sensible a ellos y el
+ * catálogo los usa.
+ */
+export function tokenizeQuery(raw: string): string[] {
+  return raw
+    .replace(CAPACITY_UNITS, " ")
+    .replace(/[^\p{L}\p{N}\s]/gu, " ")
+    .split(/\s+/)
+    .filter(Boolean)
+    .filter((t) => t.length > 1)
+    .filter((t) => !CAPACITY_NUMBERS.has(t))
+    .filter((t) => !STOPWORDS.has(fold(t)))
+    .slice(0, 6);
+}
+
+/**
+ * Busca por términos y ordena por cuántos coinciden.
+ *
+ * El filtro contra Postgres es un OR —traer de más es barato con 42
+ * productos— y el ranking se resuelve acá. Un AND en PostgREST obligaría a
+ * encadenar `.or()` y depender de cómo agrupa los parámetros repetidos;
+ * con este volumen no vale la pena esa deuda.
+ *
+ * No toca `getProducts`: el buscador de la tienda es otra cosa y cambiarlo
+ * sería meterse con F3 sin haberla terminado.
+ */
+export async function searchProducts(
+  query: string,
+  limit = 4,
+): Promise<ProductListItem[]> {
+  const terms = tokenizeQuery(query);
+  if (terms.length === 0) return [];
+
+  const supabase = createStaticClient();
+  const filter = terms
+    .flatMap((t) => [
+      `name.ilike.%${t}%`,
+      `brand.ilike.%${t}%`,
+      `sku.ilike.%${t}%`,
+      `category_name.ilike.%${t}%`,
+    ])
+    .join(",");
+
+  const { data, error } = await supabase
+    .from("products_public")
+    .select(LIST_COLUMNS)
+    .or(filter)
+    .limit(40);
+
+  if (error) {
+    console.error("[catalog] searchProducts:", error.message);
+    return [];
+  }
+
+  const scored = (data ?? []).map((row) => {
+    const item = asListItem(row);
+    const haystack =
+      `${item.name} ${item.brand} ${item.sku} ${item.category_name}`.toLowerCase();
+    const hits = terms.filter((t) => haystack.includes(t.toLowerCase())).length;
+    return { item, hits };
+  });
+
+  return scored
+    .sort(
+      (a, b) =>
+        b.hits - a.hits ||
+        Number(b.item.is_featured) - Number(a.item.is_featured) ||
+        a.item.sort_order - b.item.sort_order,
+    )
+    .slice(0, limit)
+    .map((s) => s.item);
+}
+
 export async function getFeatured(limit = 6): Promise<ProductListItem[]> {
   const supabase = createStaticClient();
   const { data, error } = await supabase

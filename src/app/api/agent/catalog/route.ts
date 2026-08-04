@@ -25,7 +25,7 @@
 import { NextResponse } from "next/server";
 import { timingSafeEqual } from "node:crypto";
 import brand from "@/brand.config";
-import { getProductBySlug, getProducts, getStoreContext } from "@/lib/catalog";
+import { getProductBySlug, getStoreContext, searchProducts } from "@/lib/catalog";
 import { buildPrice, formatCapacity, listPrice } from "@/lib/pricing";
 import { STOCK_LABEL, type ProductDetail } from "@/lib/supabase/types";
 
@@ -137,9 +137,13 @@ export async function POST(request: Request) {
 
   // Por slug es una sola lectura; por texto se busca y después se traen las
   // variantes de cada resultado.
+  //
+  // La búsqueda es por términos, no por la frase entera: el asistente
+  // pregunta como habla el cliente ("iPhone 17 Pro de 256 gigas") y la
+  // capacidad no está en el nombre del producto.
   const slugs = slug
     ? [slug]
-    : (await getProducts({ query, perPage: MAX_RESULTS })).items.map((p) => p.slug);
+    : (await searchProducts(query, MAX_RESULTS)).map((p) => p.slug);
 
   const details = (
     await Promise.all(slugs.slice(0, MAX_RESULTS).map((s) => getProductBySlug(s)))
