@@ -41,7 +41,7 @@ export default async function ShopLayout({
         id="retell-widget"
         src="https://dashboard.retellai.com/retell-widget-v2.js"
         strategy="afterInteractive"
-        data-public-key="key_xxxxxxxxxxxxxxxxxxxxx"
+        data-public-key="public_key_67b4d498f5cf58d6c9f34"
         data-voice-public-key="public_key_67b4d498f5cf58d6c9f34"
         data-agent-id="agent_ad32e23a17de975c86a4cdc06a"
         data-voice-agent-id="agent_4652aa787f86fefb91e7e8b1ec"
