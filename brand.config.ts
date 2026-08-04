@@ -60,8 +60,15 @@ export const brand = {
     warranty: "Garantía de 6 meses",
   },
 
-  /** Dominio de producción. Se completa cuando Netlify asigne la URL. */
-  url: "https://iphonex10.netlify.app",
+  /**
+   * Dominio de producción, sin barra final.
+   *
+   * Es el canónico: `gestionint.site` responde 308 hacia `www`. Alimenta
+   * `metadataBase`, el Open Graph, el sitemap y las URLs que el endpoint
+   * del asistente le pasa al chat, así que apuntar al viejo de Netlify
+   * mandaba a la nada todo link compartido por WhatsApp.
+   */
+  url: "https://www.gestionint.site",
 } as const;
 
 export type Brand = typeof brand;

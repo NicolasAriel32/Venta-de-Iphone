@@ -163,7 +163,8 @@ mostrador/
 │  │  │  ├─ pedidos/page.tsx
 │  │  │  └─ config/page.tsx             cotización, banners, datos
 │  │  └─ api/
-│  │     └─ orders/route.ts             POST pedido
+│  │     ├─ orders/route.ts             POST pedido
+│  │     └─ agent/catalog/route.ts      POST consulta del asistente (Retell)
 │  ├─ components/
 │  │  ├─ ui/                            primitivas
 │  │  ├─ shop/                          ProductCard, PriceTag, CartDrawer…
@@ -418,6 +419,8 @@ Leyenda: ⚪ pendiente · 🟡 en curso · 🟢 terminada · 🔴 bloqueada
 | 36 | `@supabase/ssr` se mantiene en la última versión, no en `^0.5.x` | La 0.5.2 importa de `@supabase/supabase-js/dist/module/lib/types`, una ruta que la 2.112 ya no publica. Con `skipLibCheck` el import roto no da error: degrada todo a `any`/`never` y los errores aparecen recién en el código propio | 2026-08-04 |
 | 37 | Widget de Retell **sin reCAPTCHA** | `retell-widget-v2.js` solo adjunta el token en el flujo de callback telefónico. En chat (`/create-chat`) lee `recaptchaToken` de un objeto que nunca lo tiene, y en voz (`/v2/create-web-call`) directamente no lo manda. Con la protección activa la API responde `401 Missing reCAPTCHA token` siempre. Verificado contra la API en producción | 2026-08-04 |
 | 38 | El botón de WhatsApp pasa a la **izquierda** y sube a `z-index: 1000000` | Retell se ancla abajo a la derecha con `z-index: 999999` y su burbuja usa `bottom: 90px` en móvil, así que apilarlo arriba tampoco servía. Y moverlo a la izquierda no alcanzó: el `_fabWrapBase` de Retell ocupa el ancho completo (359 px de 390) y reactiva `pointer-events: auto`, con lo que la franja inferior entera se traga los toques. El botón se veía pero no respondía | 2026-08-04 |
+| 39 | La base de conocimiento del asistente es **el endpoint, no el prompt** | Con el catálogo escrito en el prompt, el agente contestó lo contrario que la base: dijo que el iPhone 17 Pro de 256 GB no tenía stock (tiene) y ofreció el de 512 en un color inexistente. Un prompt es texto congelado y el catálogo se mueve todos los días con la cotización. `/api/agent/catalog` reusa `catalog.ts` y `pricing.ts`, así que el chat lee la misma fuente que la web | 2026-08-04 |
+| 40 | `brand.url` pasa a `https://www.gestionint.site` | Seguía apuntando al dominio de Netlify que nunca existió. Alimenta `metadataBase`, el OG, el sitemap y las URLs que el asistente le pasa al cliente: cada link compartido por WhatsApp iba a la nada. El canónico es con `www` — sin él responde 308 | 2026-08-04 |
 
 ---
 
