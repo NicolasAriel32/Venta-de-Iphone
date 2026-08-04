@@ -365,7 +365,7 @@ Ruta crítica: F2 → F3 → F4. Si el tiempo aprieta, F5 se reduce a **una sola
 | F0 Definición | 🟢 Terminada | 2026-08-03 | CLAUDE.md v1.3.0 + SPEC.md v1.0.0. Falta: crear cuenta de Netlify (bloquea F1) |
 | F1 Fundaciones | 🟡 En curso | 2026-08-03 | Código escrito: chasis, tokens, PWA, `netlify.toml`. **Falta verificar:** `npm install` + build + prueba en teléfono real. Sigue faltando la cuenta de Netlify |
 | F2 Datos | 🟢 Terminada | 2026-08-04 | Proyecto `iphonex10` en sa-east-1. 7 tablas + vista + RLS + bucket. Seed: 12 categorías, 42 productos, 88 colores, 46 capacidades. Tipos y `pricing.ts` con casos verificados |
-| F3 Catálogo | 🟡 En curso | 2026-08-04 | Home, listado con filtros, detalle con variantes, SEO e ISR. Precio en pesos con cotización automática del blue (`lib/exchange.ts`). **Falta:** `npm run build` y prueba en teléfono real. Sin fotos en el bucket todavía |
+| F3 Catálogo | 🟡 En curso | 2026-08-04 | Home, listado con filtros, detalle con variantes, SEO e ISR. Precio en pesos con cotización automática del blue (`lib/exchange.ts`). `npm run build` pasa: 42 fichas pre-generadas con ISR de 60 s. **Falta:** prueba en teléfono real. Sin fotos en el bucket todavía |
 | F4 Carrito | ⚪ Pendiente | — | |
 | F5 Admin | ⚪ Pendiente | — | |
 | F6 Pulido | ⚪ Pendiente | — | |
@@ -414,6 +414,8 @@ Leyenda: ⚪ pendiente · 🟡 en curso · 🟢 terminada · 🔴 bloqueada
 | 32 | Se usa la de **venta**, no la de compra | La de venta es a la que el revendedor repone mercadería. Convertir con la de compra es vender por debajo del costo de reposición | 2026-08-04 |
 | 33 | `rate_mode` con override manual | Sin esto se pierde el clímax de la demo y el dueño queda sin control si el dólar se dispara. El automático es el default, no la única opción | 2026-08-04 |
 | 34 | Cadena de fallback de 4 pasos, sin inventar números | API → último valor conocido → manual → sin precio. Un precio calculado con una cotización inventada es peor que no mostrar precio | 2026-08-04 |
+| 35 | El catálogo público lee con `createStaticClient()`, sin cookies | Leer cookies vuelve dinámica la ruta y en `generateStaticParams` directamente rompe el build. El catálogo no necesita sesión: RLS ya permite lectura anónima. El cliente con cookies queda reservado para el panel de F5 | 2026-08-04 |
+| 36 | `@supabase/ssr` se mantiene en la última versión, no en `^0.5.x` | La 0.5.2 importa de `@supabase/supabase-js/dist/module/lib/types`, una ruta que la 2.112 ya no publica. Con `skipLibCheck` el import roto no da error: degrada todo a `any`/`never` y los errores aparecen recién en el código propio | 2026-08-04 |
 
 ---
 

@@ -9,7 +9,7 @@
  * activas (F2).
  */
 
-import { createClient } from "./supabase/server";
+import { createStaticClient } from "./supabase/server";
 import { resolveRate, type ExchangeRate } from "./exchange";
 import type {
   Category,
@@ -48,7 +48,7 @@ function asListItem(row: Record<string, unknown>): ProductListItem {
  * absolutamente todo el catálogo.
  */
 export async function getStoreConfig(): Promise<StoreConfig | null> {
-  const supabase = await createClient();
+  const supabase = createStaticClient();
   const { data, error } = await supabase.from("store_config").select("*").single();
 
   if (error) {
@@ -83,7 +83,7 @@ export async function getUsdRate(): Promise<number> {
 // ------------------------------------------------------------ categorías
 
 export async function getCategories(): Promise<Category[]> {
-  const supabase = await createClient();
+  const supabase = createStaticClient();
   const { data, error } = await supabase
     .from("categories")
     .select("*")
@@ -98,7 +98,7 @@ export async function getCategories(): Promise<Category[]> {
 }
 
 export async function getCategoryBySlug(slug: string): Promise<Category | null> {
-  const supabase = await createClient();
+  const supabase = createStaticClient();
   const { data } = await supabase
     .from("categories")
     .select("*")
@@ -140,7 +140,7 @@ export async function getProducts(filters: CatalogFilters = {}): Promise<Catalog
     perPage = 12,
   } = filters;
 
-  const supabase = await createClient();
+  const supabase = createStaticClient();
   let q = supabase.from("products_public").select(LIST_COLUMNS, { count: "exact" });
 
   if (category) q = q.eq("category_slug", category);
@@ -191,7 +191,7 @@ export async function getProducts(filters: CatalogFilters = {}): Promise<Catalog
 }
 
 export async function getFeatured(limit = 6): Promise<ProductListItem[]> {
-  const supabase = await createClient();
+  const supabase = createStaticClient();
   const { data, error } = await supabase
     .from("products_public")
     .select(LIST_COLUMNS)
@@ -208,7 +208,7 @@ export async function getFeatured(limit = 6): Promise<ProductListItem[]> {
 
 /** Marcas presentes en el catálogo, para el filtro. */
 export async function getBrands(category?: string): Promise<string[]> {
-  const supabase = await createClient();
+  const supabase = createStaticClient();
   let q = supabase.from("products_public").select("brand");
   if (category) q = q.eq("category_slug", category);
 
@@ -222,7 +222,7 @@ export async function getBrands(category?: string): Promise<string[]> {
 // --------------------------------------------------------------- detalle
 
 export async function getProductBySlug(slug: string): Promise<ProductDetail | null> {
-  const supabase = await createClient();
+  const supabase = createStaticClient();
 
   const { data: base, error } = await supabase
     .from("products_public")
@@ -264,7 +264,7 @@ export async function getProductBySlug(slug: string): Promise<ProductDetail | nu
 
 /** Slugs de todos los productos activos. Alimenta el sitemap. */
 export async function getAllProductSlugs(): Promise<{ slug: string; created_at: string }[]> {
-  const supabase = await createClient();
+  const supabase = createStaticClient();
   const { data } = await supabase.from("products_public").select("slug, created_at");
   return (data ?? []) as { slug: string; created_at: string }[];
 }
