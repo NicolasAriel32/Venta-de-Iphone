@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import brand from "@/brand.config";
 import ProductVariants from "@/components/shop/ProductVariants";
+import Track from "@/components/shop/Track";
 import { ChevronLeftIcon, WarrantyIcon, TruckIcon, CardIcon } from "@/components/ui/icons";
 import { getAllProductSlugs, getProductBySlug, getStoreContext } from "@/lib/catalog";
 import { absoluteImageUrl } from "@/lib/images";
@@ -75,6 +76,9 @@ export default async function ProductoPage({ params }: Props) {
 
   return (
     <article className="pb-20">
+      {/* Registra QUÉ producto se miró. La visita en sí ya la cuenta el
+          <Track /> del layout: son dos métricas distintas del panel. */}
+      <Track productId={product.id} />
       <div className="detail-hero reveal rounded-2xl p-4 mb-6">
         <nav className="mt-3 flex items-center gap-1 text-sm">
         <Link

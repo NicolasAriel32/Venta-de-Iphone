@@ -3,6 +3,7 @@
 import { usePathname } from "next/navigation";
 import brand from "@/brand.config";
 import { WhatsAppIcon } from "@/components/ui/icons";
+import { trackWhatsApp } from "@/lib/analytics";
 
 /**
  * Botón flotante de WhatsApp — FC-5 de SPEC.md.
@@ -49,6 +50,9 @@ export default function WhatsAppFab({ whatsapp }: { whatsapp?: string }) {
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Escribinos por WhatsApp"
+      // El evento sale por `sendBeacon`, que sobrevive a que el navegador se
+      // vaya a la app de WhatsApp en el mismo gesto.
+      onClick={() => trackWhatsApp("fab")}
       className="fixed left-4 z-[1000000] flex h-14 w-14 items-center justify-center rounded-full bg-[#25D366] text-white shadow-lg shadow-black/40 transition-transform active:scale-95"
       style={{ bottom: "calc(1rem + env(safe-area-inset-bottom))" }}
     >

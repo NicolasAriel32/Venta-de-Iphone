@@ -5,6 +5,7 @@ import CategoryNav from "@/components/shop/CategoryNav";
 import Footer from "@/components/shop/Footer";
 import WhatsAppFab from "@/components/shop/WhatsAppFab";
 import CartDrawer from "@/components/shop/CartDrawer";
+import Track from "@/components/shop/Track";
 import { getCategories, getStoreContext } from "@/lib/catalog";
 
 export default async function ShopLayout({
@@ -28,6 +29,9 @@ export default async function ShopLayout({
       <a href="#contenido" className="skip-link">
         Ir al contenido
       </a>
+      {/* Métricas del panel (F5). Cuenta la pantalla vista; la ficha de
+          producto además registra cuál, desde su propio <Track productId>. */}
+      <Track />
       <Header storeName={config?.store_name} />
       <CategoryNav categories={categories} />
       <main id="contenido" className="mx-auto max-w-5xl px-4 pb-24">

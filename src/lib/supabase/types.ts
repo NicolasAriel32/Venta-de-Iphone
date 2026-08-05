@@ -12,6 +12,7 @@ import type { Tables, Enums } from "./database.types";
 export type StockStatus = Enums<"stock_status">;
 export type OrderStatus = Enums<"order_status">;
 export type RateMode = Enums<"rate_mode">;
+export type AnalyticsEventKind = Enums<"analytics_event_kind">;
 
 export type Category = Tables<"categories">;
 export type Product = Tables<"products">;
@@ -80,6 +81,48 @@ export type OrderItem = {
   quantity: number;
   unit_price_ars: number;
   subtotal_ars: number;
+};
+
+/**
+ * Métricas del panel, tal como las devuelve el RPC `dashboard_metrics`.
+ *
+ * El RPC devuelve `jsonb`, así que del lado de TS llega como `Json` y hay
+ * que darle forma acá. Es el mismo caso que `colors` en la vista.
+ */
+export type MetricTotals = {
+  /** Sesiones distintas, no personas: un mismo cliente en dos teléfonos cuenta dos veces. */
+  visits: number;
+  page_views: number;
+  product_views: number;
+  whatsapp_clicks: number;
+  agent_queries: number;
+};
+
+export type MetricTopProduct = {
+  id: string;
+  name: string;
+  slug: string;
+  views: number;
+  clicks: number;
+};
+
+export type MetricPoint = {
+  /** `YYYY-MM-DD` en hora de Argentina. */
+  day: string;
+  visits: number;
+  product_views: number;
+  whatsapp_clicks: number;
+};
+
+export type DashboardMetrics = {
+  days: number;
+  from: string;
+  to: string;
+  totals: MetricTotals;
+  /** La ventana anterior del mismo largo, para poder comparar. */
+  previous: MetricTotals;
+  top: MetricTopProduct[];
+  series: MetricPoint[];
 };
 
 export const STOCK_LABEL: Record<StockStatus, string> = {

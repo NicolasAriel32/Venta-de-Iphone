@@ -8,6 +8,7 @@ import { WhatsAppIcon } from "@/components/ui/icons";
 import { imageUrl } from "@/lib/images";
 import { defaultCapacity, effectiveStock, formatCapacity } from "@/lib/pricing";
 import { inquiryMessage, outOfStockMessage, whatsappUrl } from "@/lib/whatsapp";
+import { trackWhatsApp } from "@/lib/analytics";
 import { useCart } from "@/store/cart";
 import type { ProductDetail } from "@/lib/supabase/types";
 
@@ -337,6 +338,9 @@ export default function ProductVariants({
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Consultar por WhatsApp"
+            // Con el producto, para que el panel pueda decir cuál es el que
+            // más consultas genera y no solo cuántas hubo.
+            onClick={() => trackWhatsApp("detail", product.id)}
             className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-[#25D366] text-white"
           >
             <WhatsAppIcon />

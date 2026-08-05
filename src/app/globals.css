@@ -473,3 +473,176 @@ button {
 @media (min-width: 768px) {
   .product-description { font-size: 17px; }
 }
+
+/* ---------------------------------------------------------------
+   Panel de administración — F5.
+
+   Mismo sistema "Ink & Signal" que la tienda (decisión 45), no un
+   tema aparte: el panel se abre desde el mismo teléfono y a los
+   treinta segundos de haber estado mirando el catálogo. Lo que
+   cambia es la JERARQUÍA, no el idioma visual — acá el protagonista
+   es el dato, como en la tienda es el precio.
+
+   Contraste tipográfico al extremo: cifras de 2.75rem en peso 800
+   contra etiquetas de 10 px en peso 500 y 0.14em de tracking. Un
+   salto de 4x. A media distancia, con el teléfono en la mano y de
+   pie, lo único que se tiene que leer es el número.
+   --------------------------------------------------------------- */
+
+/* Atmósfera: dos resplandores de acento muy diluidos arriba de todo. Le
+   sacan al panel el aire de "formulario sobre fondo plano" sin costar una
+   imagen ni un request.
+
+   Van como `background` del propio contenedor y NO como un pseudo-elemento
+   con `position: fixed; z-index: -1`: un negativo depende de que ningún
+   ancestro cree contexto de apilamiento, y el panel está lleno de tarjetas
+   con `overflow: hidden` y animaciones. Es la misma clase de fragilidad que
+   costó la decisión 51. Acá no hay nada que se pueda romper. */
+.admin-shell {
+  background:
+    radial-gradient(
+      120% 340px at 12% 0%,
+      color-mix(in srgb, var(--color-accent) 13%, transparent),
+      transparent 70%
+    ),
+    radial-gradient(
+      90% 260px at 100% 120px,
+      color-mix(in srgb, var(--color-ok) 7%, transparent),
+      transparent 72%
+    );
+  background-repeat: no-repeat;
+}
+
+/* --- Tarjetas de métrica ------------------------------------------- */
+
+.metric-tile {
+  position: relative;
+  border-radius: 1rem;
+  border: 1px solid var(--color-line);
+  background: linear-gradient(158deg, var(--color-surface), var(--color-ink) 82%);
+  overflow: hidden;
+}
+
+/* Filo de luz superior. Un pixel: es lo que separa una tarjeta de un rectángulo. */
+.metric-tile::after {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in srgb, var(--color-accent) 45%, transparent),
+    transparent
+  );
+}
+
+.metric-label {
+  font-size: 0.625rem; /* 10 px */
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+.metric-value {
+  font-family: var(--font-display);
+  /* El salto de escala: 44 px en un viewport de 390. */
+  font-size: clamp(2.25rem, 11vw, 2.75rem);
+  font-weight: 800;
+  line-height: 0.92;
+  letter-spacing: -0.03em;
+  color: var(--color-paper);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+/* --- Cotización: el elemento firma del panel ------------------------ */
+
+/* Se gana el mismo anillo de degradé que la ficha de precio de la tienda.
+   No es decoración repetida por inercia: en las dos pantallas marca el
+   mismo concepto —el número que manda— y que se vean iguales es el punto. */
+.rate-card {
+  position: relative;
+  border-radius: 1rem;
+  border: 1px solid var(--color-line);
+  background: linear-gradient(160deg, var(--color-surface), var(--color-ink));
+  overflow: hidden;
+}
+
+.rate-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  padding: 1px;
+  border-radius: inherit;
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--color-accent) 65%, transparent),
+    transparent 45%,
+    color-mix(in srgb, var(--color-accent) 25%, transparent)
+  );
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+.rate-value {
+  font-family: var(--font-display);
+  font-size: clamp(2.5rem, 13vw, 3.25rem);
+  font-weight: 800;
+  line-height: 0.9;
+  letter-spacing: -0.035em;
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+/* --- Editor de precios --------------------------------------------- */
+
+.admin-card {
+  border-radius: 1rem;
+  border: 1px solid var(--color-line);
+  background: linear-gradient(170deg, var(--color-surface), var(--color-ink) 90%);
+}
+
+/* Un producto con cambios sin guardar se marca solo. Sin esto, en una lista
+   de 42 tarjetas el dueño pierde de vista cuál estaba editando. */
+.admin-card[data-dirty="true"] {
+  border-color: color-mix(in srgb, var(--color-accent) 55%, var(--color-line));
+}
+
+/* El input de precio es el control principal de la pantalla: se le da peso
+   tipográfico en vez de un borde más grueso. */
+.price-input {
+  font-family: var(--font-display);
+  font-size: 1.125rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+/* Confirmación de guardado. Un pulso de 900 ms y se va: el dueño necesita
+   saber que el precio viajó, no leer un cartel. */
+@keyframes saved-pulse {
+  0% { background-color: color-mix(in srgb, var(--color-ok) 22%, transparent); }
+  100% { background-color: transparent; }
+}
+
+.just-saved {
+  animation: saved-pulse 0.9s ease-out both;
+}
+
+/* --- Entrada escalonada -------------------------------------------- */
+
+/* Un solo momento orquestado al abrir, como en la tienda. Las tarjetas de
+   precio NO se animan: son 42 y un escalonado ahí se vuelve una cascada
+   que estorba. */
+.admin-reveal {
+  animation: reveal-up 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.admin-reveal-1 { animation-delay: 0.04s; }
+.admin-reveal-2 { animation-delay: 0.1s; }
+.admin-reveal-3 { animation-delay: 0.16s; }
+.admin-reveal-4 { animation-delay: 0.22s; }

@@ -27,6 +27,7 @@ import { timingSafeEqual } from "node:crypto";
 import brand from "@/brand.config";
 import { getProductBySlug, getStoreContext, searchProducts } from "@/lib/catalog";
 import { buildPrice, formatCapacity, listPrice } from "@/lib/pricing";
+import { createStaticClient } from "@/lib/supabase/server";
 import { STOCK_LABEL, type ProductDetail } from "@/lib/supabase/types";
 
 /** Nunca se prerenderiza: cada llamada tiene que leer la cotización del momento. */
@@ -99,6 +100,34 @@ function shapeProduct(product: ProductDetail, usdRate: number) {
   };
 }
 
+/**
+ * Registra la consulta para las métricas del panel (F5).
+ *
+ * Se loguea del lado del servidor porque acá ya sabemos qué preguntaron y
+ * qué se encontró; hacerlo desde el widget costaría JavaScript en la tienda
+ * y además el widget es de Retell, no nuestro.
+ *
+ * Las consultas **sin resultado** también se guardan, y son las más útiles:
+ * son la lista de lo que la gente busca y el local no tiene.
+ */
+async function trackAgentQuery(
+  query: string,
+  productId: string | null,
+  results: number,
+) {
+  try {
+    const supabase = createStaticClient();
+    await supabase.rpc("track_event", {
+      p_kind: "agent_query",
+      p_product_id: productId ?? undefined,
+      p_meta: { query: query.slice(0, 120), results },
+    });
+  } catch {
+    // Una métrica perdida no puede dejar sin respuesta al cliente que está
+    // hablando con el asistente.
+  }
+}
+
 export async function POST(request: Request) {
   const expected = process.env.AGENT_API_SECRET;
 
@@ -148,6 +177,8 @@ export async function POST(request: Request) {
   const details = (
     await Promise.all(slugs.slice(0, MAX_RESULTS).map((s) => getProductBySlug(s)))
   ).filter((p): p is ProductDetail => p !== null);
+
+  await trackAgentQuery(query || slug, details[0]?.id ?? null, details.length);
 
   if (details.length === 0) {
     return NextResponse.json({

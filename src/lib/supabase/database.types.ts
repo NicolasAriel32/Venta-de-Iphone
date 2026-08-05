@@ -21,6 +21,51 @@ export type Database = {
   };
   public: {
     Tables: {
+      analytics_events: {
+        Row: {
+          created_at: string;
+          id: number;
+          kind: Database["public"]["Enums"]["analytics_event_kind"];
+          meta: Json;
+          path: string | null;
+          product_id: string | null;
+          session_id: string | null;
+        };
+        Insert: {
+          created_at?: string;
+          id?: never;
+          kind: Database["public"]["Enums"]["analytics_event_kind"];
+          meta?: Json;
+          path?: string | null;
+          product_id?: string | null;
+          session_id?: string | null;
+        };
+        Update: {
+          created_at?: string;
+          id?: never;
+          kind?: Database["public"]["Enums"]["analytics_event_kind"];
+          meta?: Json;
+          path?: string | null;
+          product_id?: string | null;
+          session_id?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "analytics_events_product_id_fkey";
+            columns: ["product_id"];
+            isOneToOne: false;
+            referencedRelation: "products";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "analytics_events_product_id_fkey";
+            columns: ["product_id"];
+            isOneToOne: false;
+            referencedRelation: "products_public";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       categories: {
         Row: {
           created_at: string;
@@ -338,8 +383,27 @@ export type Database = {
         };
         Returns: string;
       };
+      dashboard_metrics: {
+        Args: { p_days?: number };
+        Returns: Json;
+      };
+      track_event: {
+        Args: {
+          p_kind: string;
+          p_meta?: Json;
+          p_path?: string;
+          p_product_id?: string;
+          p_session?: string;
+        };
+        Returns: undefined;
+      };
     };
     Enums: {
+      analytics_event_kind:
+        | "page_view"
+        | "product_view"
+        | "whatsapp_click"
+        | "agent_query";
       order_status: "new" | "contacted" | "closed" | "lost";
       rate_mode: "auto" | "manual";
       stock_status: "in_stock" | "on_demand" | "out_of_stock";
