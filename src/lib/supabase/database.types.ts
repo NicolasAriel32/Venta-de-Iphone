@@ -325,7 +325,20 @@ export type Database = {
         Relationships: [];
       };
     };
-    Functions: Record<never, never>;
+    Functions: {
+      create_order: {
+        Args: {
+          p_customer_name: string;
+          p_customer_phone: string;
+          p_items: Json;
+          p_note?: string;
+          p_prefix: string;
+          p_total_ars: number;
+          p_usd_rate: number;
+        };
+        Returns: string;
+      };
+    };
     Enums: {
       order_status: "new" | "contacted" | "closed" | "lost";
       rate_mode: "auto" | "manual";

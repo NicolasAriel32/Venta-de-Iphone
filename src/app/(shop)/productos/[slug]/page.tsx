@@ -94,7 +94,21 @@ export default async function ProductoPage({ params }: Props) {
         </h1>
       </div>
 
-      <div className="reveal reveal-2 rounded-2xl border border-line bg-surface p-5">
+      {/*
+        Esta tarjeta NO lleva animación de entrada, a propósito.
+
+        Adentro vive la barra de acción fija con "Agregar al carrito". Un
+        ancestro animado la rompe de dos maneras: `transform` lo vuelve el
+        bloque contenedor del `fixed` (la barra dejaba de estar pegada al
+        borde de la pantalla y quedaba al final de la ficha, fuera de la zona
+        del pulgar), y una animación de `opacity` con `fill-mode: both` crea
+        un contexto de apilamiento permanente que encierra el z-index de la
+        barra por debajo del widget de Retell — con lo que el botón se veía
+        pero no respondía al toque (CLAUDE.md §9, decisión 51).
+
+        La entrada escalonada la sigue haciendo el encabezado de arriba.
+      */}
+      <div className="rounded-2xl border border-line bg-surface p-5">
         <ProductVariants
           product={product}
           usdRate={usdRate}

@@ -2,7 +2,7 @@
 
 > Especificación funcional: user flows, wireframes a 390 px, reglas de negocio y catálogo demo.
 > Complemento de `CLAUDE.md`. Si los dos se contradicen, **manda CLAUDE.md** y este archivo se corrige.
-> Versión: `v1.0.0` · Última actualización: 2026-08-03 · Fase: F0
+> Versión: `v1.1.0` · Última actualización: 2026-08-05 · Fase: F4
 
 ---
 
@@ -285,11 +285,20 @@ Muchos compradores de este rubro no usan carrito: preguntan. Hay tres puntos de 
 │  [__________________________]│
 │  Teléfono                    │
 │  [__________________________]│  inputmode=tel
-└──────────────────────────────┘
-┌──────────────────────────────┐
-│ [ Enviar pedido por WhatsApp]│
+│  Comentario (opcional)       │
+│  [__________________________]│
+│                              │
+│ [ Enviar pedido por WhatsApp]│  ← al final del form,
+│  Guardamos el pedido y te    │    NO en barra fija
+│  abrimos el chat con todo    │
 └──────────────────────────────┘
 ```
+
+> **Corrección (decisión 49).** El botón de enviar **no** va en barra fija.
+> En celular, el teclado virtual tapa las barras fijas justo cuando el cliente
+> termina de escribir el teléfono, y el borde inferior ya está ocupado por el
+> widget de Retell y el botón de WhatsApp (decisión 38). Al final del
+> formulario queda igual en la zona del pulgar, debajo del último campo.
 
 ### Admin · Config
 
@@ -555,4 +564,5 @@ Para los productos con colores, la imagen 1 de cada color es la que se muestra a
 
 | Versión | Fecha | Cambio |
 |---|---|---|
+| v1.1.0 | 2026-08-05 | F4: el botón de enviar del carrito sale de la barra fija y pasa al final del formulario (decisión 49). Se agrega el campo de comentario opcional al wireframe |
 | v1.0.0 | 2026-08-03 | Primera versión. Cierra F0 junto con CLAUDE.md v1.3.0 |

@@ -4,12 +4,18 @@ import Header from "@/components/shop/Header";
 import CategoryNav from "@/components/shop/CategoryNav";
 import Footer from "@/components/shop/Footer";
 import WhatsAppFab from "@/components/shop/WhatsAppFab";
-import { getCategories, getStoreConfig } from "@/lib/catalog";
+import CartDrawer from "@/components/shop/CartDrawer";
+import { getCategories, getStoreContext } from "@/lib/catalog";
 
 export default async function ShopLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
-  const [categories, config] = await Promise.all([getCategories(), getStoreConfig()]);
+  // El drawer del carrito se abre desde cualquier pantalla, así que necesita
+  // la cotización acá: el carrito guarda USD y el peso se calcula al pintar.
+  const [categories, { config, rate }] = await Promise.all([
+    getCategories(),
+    getStoreContext(),
+  ]);
 
   const notes = {
     warranty: config?.warranty_note || brand.notes.warranty,
@@ -33,6 +39,7 @@ export default async function ShopLayout({
         notes={notes}
       />
       <WhatsAppFab whatsapp={config?.whatsapp_number} />
+      <CartDrawer usdRate={rate.value} paymentNote={notes.payment} />
       {/* Widget de Retell (chat + voz).
           Sin `data-recaptcha-key` a propósito: ver CLAUDE.md §9, decisión 37.
           Los colores salen de brand.config.ts, no escritos a mano (decisión 07). */}

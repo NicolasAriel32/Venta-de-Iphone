@@ -1,3 +1,6 @@
+"use client";
+
+import { usePathname } from "next/navigation";
 import brand from "@/brand.config";
 import { WhatsAppIcon } from "@/components/ui/icons";
 
@@ -14,7 +17,7 @@ import { WhatsAppIcon } from "@/components/ui/icons";
  * en móvil, justo donde caería este botón.
  *
  * El z-index alto no es capricho. Retell envuelve su botón en un
- * `_fabWrapBase` de ancho completo (359 px en un viewport de 390) que
+ * `_fabWrapBase` de ancho completo (345 px en un viewport de 375) que
  * reactiva `pointer-events: auto` sobre el `pointer-events: none` de su
  * contenedor. Esa franja invisible se traga los toques de todo el borde
  * inferior, así que hay que quedar por encima de sus 999999 o el botón
@@ -23,7 +26,20 @@ import { WhatsAppIcon } from "@/components/ui/icons";
  * El número sale de store_config para que el dueño lo cambie desde el panel
  * sin tocar código; brand.config.ts es solo el fallback.
  */
+
+/** `/productos/algo` sí; `/productos` no. */
+const PRODUCT_DETAIL = /^\/productos\/[^/]+$/;
+
 export default function WhatsAppFab({ whatsapp }: { whatsapp?: string }) {
+  const pathname = usePathname();
+
+  // En la ficha de producto no se dibuja: esa pantalla ya tiene su propia
+  // barra fija con un botón de WhatsApp, y esa barra tiene que quedar por
+  // encima de Retell para que "Agregar al carrito" responda al toque
+  // (decisión 51). Con las dos cosas, el flotante quedaba tapado y
+  // duplicado. Una sola salida a WhatsApp por pantalla.
+  if (PRODUCT_DETAIL.test(pathname)) return null;
+
   const number = whatsapp || brand.whatsapp.number;
   const href = `https://wa.me/${number}?text=${encodeURIComponent(brand.whatsapp.defaultMessage)}`;
 

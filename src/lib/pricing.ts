@@ -188,19 +188,80 @@ export function effectiveStock(
   return selected ? selected.stock_status : productStock;
 }
 
-/** Suma de un carrito ya convertido a ARS. */
-export function cartTotals(
-  items: { unit_price_ars: number; quantity: number }[],
-  discountPct: number,
-): { totalArs: number; transferArs: number } {
-  const totalArs = items.reduce(
-    (acc, i) => acc + i.unit_price_ars * i.quantity,
-    0,
-  );
-  return { totalArs, transferArs: transferPrice(totalArs, discountPct) };
+// ------------------------------------------------------------------ carrito
+
+/**
+ * Una línea del carrito, en la unidad en la que se guarda: USD.
+ *
+ * El carrito NO guarda pesos. Guarda el USD del producto y la conversión se
+ * hace en cada render con la cotización vigente, igual que el catálogo. Si
+ * guardara pesos, un carrito abandonado ayer mostraría el precio de ayer
+ * mientras la ficha del mismo producto muestra el de hoy.
+ *
+ * El descuento por transferencia es POR PRODUCTO (`discount_transfer_pct`),
+ * no global: un accesorio y un iPhone pueden tener porcentajes distintos.
+ */
+export type CartLineInput = {
+  priceUsd: number;
+  discountPct: number;
+  quantity: number;
+};
+
+export type CartLineTotals = {
+  unitArs: number;
+  unitTransferArs: number;
+  subtotalArs: number;
+  subtotalTransferArs: number;
+};
+
+/**
+ * Totales de una línea.
+ *
+ * El descuento se aplica al precio UNITARIO y recién después se multiplica
+ * por la cantidad. Al revés, el total de transferencia no coincidiría con
+ * el precio unitario que muestra esa misma línea en pantalla.
+ */
+export function lineTotals(line: CartLineInput, usdRate: number): CartLineTotals {
+  const qty = Math.max(1, Math.trunc(line.quantity));
+  const unitArs = usdToArs(line.priceUsd, usdRate);
+  const unitTransferArs = transferPrice(unitArs, line.discountPct);
+
+  return {
+    unitArs,
+    unitTransferArs,
+    subtotalArs: unitArs * qty,
+    subtotalTransferArs: unitTransferArs * qty,
+  };
 }
 
-/** Código de pedido legible: IPX-0142 */
-export function orderCode(prefix: string, sequence: number): string {
-  return `${prefix}-${String(sequence).padStart(4, "0")}`;
+export type CartTotals = {
+  totalArs: number;
+  transferArs: number;
+  savingsArs: number;
+  /** Sin ahorro real no se muestra el bloque de transferencia (SPEC.md §6). */
+  hasDiscount: boolean;
+  /** Unidades, no líneas: es lo que va en el globito del header. */
+  itemCount: number;
+};
+
+export function cartTotals(lines: CartLineInput[], usdRate: number): CartTotals {
+  let totalArs = 0;
+  let transferArs = 0;
+  let itemCount = 0;
+
+  for (const line of lines) {
+    const t = lineTotals(line, usdRate);
+    totalArs += t.subtotalArs;
+    transferArs += t.subtotalTransferArs;
+    itemCount += Math.max(1, Math.trunc(line.quantity));
+  }
+
+  const savingsArs = totalArs - transferArs;
+  return {
+    totalArs,
+    transferArs,
+    savingsArs,
+    hasDiscount: savingsArs > 0,
+    itemCount,
+  };
 }

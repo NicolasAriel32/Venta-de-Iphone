@@ -4,7 +4,8 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import brand from "@/brand.config";
-import { CartIcon, CloseIcon, SearchIcon } from "@/components/ui/icons";
+import CartButton from "./CartButton";
+import { CloseIcon, SearchIcon } from "@/components/ui/icons";
 
 /**
  * Header fijo de 56 px (SPEC.md §5).
@@ -86,13 +87,7 @@ export default function Header({ storeName }: { storeName?: string }) {
               <SearchIcon />
             </button>
 
-            <Link
-              href="/carrito"
-              aria-label="Ver el carrito"
-              className="tap flex h-11 w-11 items-center justify-center rounded-lg text-paper"
-            >
-              <CartIcon />
-            </Link>
+            <CartButton />
           </>
         )}
       </div>

@@ -169,6 +169,12 @@ button {
 .reveal {
   animation: reveal-up 0.55s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
+
+/* ⚠️ `.reveal` NO se le pone a un contenedor que tenga adentro un elemento
+   `position: fixed`. El `transform` lo convierte en el bloque contenedor de
+   ese fixed, y la animación de `opacity` con `fill-mode: both` le crea un
+   contexto de apilamiento permanente que encierra su z-index. Las dos cosas
+   rompieron la barra de acción del detalle (decisión 51). */
 .reveal-1 { animation-delay: 0.06s; }
 .reveal-2 { animation-delay: 0.13s; }
 .reveal-3 { animation-delay: 0.2s; }
@@ -245,11 +251,20 @@ button {
     linear-gradient(180deg, var(--color-surface), var(--color-ink));
 }
 
-/* Style the fixed action bar to be slightly translucent and clearly separated */
+/* Barra de acción fija del detalle: translúcida y claramente separada.
+ *
+ * ⚠️ El z-index no es decorativo. Retell dibuja un `_fabWrapBase` de 345 px
+ * de ancho con `pointer-events: auto` sobre toda la franja inferior, dentro
+ * de un contenedor `fixed` con z-index 999999 (CLAUDE.md §9, decisión 38).
+ * Con el z-30 anterior, "Agregar al carrito" se veía pero no respondía al
+ * toque: exactamente el mismo bug que ya había obligado a mover el botón de
+ * WhatsApp. Verificado con hit-testing a 375 px.
+ */
 .product-action-bar {
-  background: linear-gradient(180deg, rgba(11, 13, 16, 0.72), rgba(11, 13, 16, 0.56));
+  z-index: 1000001;
+  background: linear-gradient(180deg, rgba(11, 13, 16, 0.92), rgba(11, 13, 16, 0.82));
   border-top-color: rgba(255, 255, 255, 0.06);
-  backdrop-filter: blur(6px);
+  backdrop-filter: blur(10px);
 }
 .product-action-bar .mx-auto { padding-top: 0.25rem; padding-bottom: 0.25rem; }
 .product-action-bar a,
@@ -288,6 +303,42 @@ button {
 }
 
 .price-figure {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+/* ---------------------------------------------------------------
+   Carrito — F4.
+   El drawer es la única pantalla que entra desde afuera, así que se
+   gana su propia animación. Todo lo demás sigue el revelado
+   escalonado de entrada (decisión #45): un momento bien orquestado,
+   no micro-animaciones sueltas.
+   --------------------------------------------------------------- */
+
+@keyframes sheet-up {
+  from {
+    transform: translateY(14%);
+    opacity: 0.4;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.cart-sheet {
+  animation: sheet-up 0.28s cubic-bezier(0.16, 1, 0.3, 1) both;
+  /* Mismo resplandor de acento que el resto del sistema, apenas
+     insinuado: el drawer aparece sobre el catálogo, no lo reemplaza. */
+  background:
+    radial-gradient(120% 90% at 50% 0%, color-mix(in srgb, var(--color-accent) 12%, transparent), transparent 60%),
+    var(--color-ink);
+  box-shadow: 0 -20px 60px -12px rgba(0, 0, 0, 0.7);
+}
+
+/* Controles de cantidad: tabulares para que el número no baile al
+   pasar de 9 a 10 con el dedo todavía apoyado en el botón. */
+.qty-control {
   font-variant-numeric: tabular-nums;
   font-feature-settings: "tnum" 1;
 }

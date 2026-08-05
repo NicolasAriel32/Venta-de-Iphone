@@ -1,12 +1,14 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useSyncExternalStore } from "react";
 import Image from "next/image";
 import PriceTag from "./PriceTag";
 import StockBadge from "./StockBadge";
 import { WhatsAppIcon } from "@/components/ui/icons";
 import { imageUrl } from "@/lib/images";
 import { defaultCapacity, effectiveStock, formatCapacity } from "@/lib/pricing";
+import { inquiryMessage, outOfStockMessage, whatsappUrl } from "@/lib/whatsapp";
+import { useCart } from "@/store/cart";
 import type { ProductDetail } from "@/lib/supabase/types";
 
 /**
@@ -21,6 +23,10 @@ import type { ProductDetail } from "@/lib/supabase/types";
  *     pegado en WhatsApp abra el color y la capacidad correctos.
  *   · Sin salto de layout: la galería y la ficha tienen altura reservada.
  */
+
+/** Nunca hay nada a qué suscribirse: esto no cambia después de hidratar. */
+const neverChanges = () => () => {};
+
 export default function ProductVariants({
   product,
   usdRate,
@@ -35,44 +41,50 @@ export default function ProductVariants({
   const colors = product.allColors;
   const capacities = product.capacities;
 
-  // Estado inicial: primer color activo y capacidad más chica con stock.
-  const [colorSlug, setColorSlug] = useState(() => colors[0]?.slug ?? "");
-  const [capacityId, setCapacityId] = useState(
-    () => defaultCapacity(capacities)?.id ?? "",
-  );
-
+  /**
+   * Lo que el usuario tocó. `null` = todavía no tocó nada y manda la URL.
+   */
+  const [pickedColor, setPickedColor] = useState<string | null>(null);
+  const [pickedCapacity, setPickedCapacity] = useState<string | null>(null);
   const [imageIndex, setImageIndex] = useState(0);
-  const [added, setAdded] = useState(false);
-  // Hasta no haber leído la URL, no se pisa la URL con el estado por defecto.
-  const [urlRead, setUrlRead] = useState(false);
+
+  const addToCart = useCart((s) => s.add);
 
   /**
-   * Lee la variante de la URL al montar.
+   * `false` en el HTML del servidor y durante la hidratación; `true` después.
    *
-   * Se hace acá y no en el servidor a propósito: si la página leyera
-   * searchParams, Next la volvería dinámica y perdería el ISR. Un link
-   * pegado en WhatsApp con ?color=negro&cap=256 abre igual en la variante
-   * correcta, apenas un frame después.
+   * La variante de la URL no se puede leer en el servidor: si la página
+   * leyera `searchParams`, Next la volvería dinámica y perdería el ISR
+   * (decisión 26). Y si el primer render del cliente ya usara la URL, no
+   * coincidiría con el HTML del servidor y React tiraría un error de
+   * hidratación. Con esto, el link pegado en WhatsApp con
+   * `?color=negro&cap=256` abre en la variante correcta un frame después.
    */
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
+  const hydrated = useSyncExternalStore(
+    neverChanges,
+    () => true,
+    () => false,
+  );
 
-    const wantedColor = params.get("color");
-    if (wantedColor) {
-      const match = colors.find((c) => c.slug === wantedColor);
-      if (match) setColorSlug(match.slug);
-    }
+  const urlParams = hydrated ? new URLSearchParams(window.location.search) : null;
 
-    const wantedCap = params.get("cap");
-    if (wantedCap) {
-      const match = capacities.find((c) => String(c.capacity_gb) === wantedCap);
-      if (match) setCapacityId(match.id);
-    }
+  // La selección se DERIVA: lo que tocó el usuario, si no lo que dice la URL,
+  // si no el default (primer color activo y capacidad más chica con stock).
+  // Derivarlo evita el efecto que antes sincronizaba estas tres fuentes a
+  // fuerza de `setState`, que encadenaba renders.
+  const urlColor = urlParams?.get("color");
+  const colorSlug =
+    pickedColor ??
+    colors.find((c) => c.slug === urlColor)?.slug ??
+    colors[0]?.slug ??
+    "";
 
-    setUrlRead(true);
-    // Solo al montar: después manda el estado, no la URL.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const urlCap = urlParams?.get("cap");
+  const capacityId =
+    pickedCapacity ??
+    capacities.find((c) => String(c.capacity_gb) === urlCap)?.id ??
+    defaultCapacity(capacities)?.id ??
+    "";
 
   const selectedColor = colors.find((c) => c.slug === colorSlug) ?? null;
   const selectedCapacity = capacities.find((c) => c.id === capacityId) ?? null;
@@ -90,13 +102,19 @@ export default function ProductVariants({
   }, [product.images, selectedColor]);
 
   // Al cambiar de color, volver a la primera foto de ese color.
-  useEffect(() => {
+  // Se corrige en el propio render y no en un efecto: en un efecto, el usuario
+  // llega a ver un frame con la foto del color anterior antes del reajuste.
+  const [indexColor, setIndexColor] = useState(colorSlug);
+  if (indexColor !== colorSlug) {
+    setIndexColor(colorSlug);
     setImageIndex(0);
-  }, [colorSlug]);
+  }
 
   // Reflejar la variante en la URL sin recargar ni ensuciar el historial.
+  // Este SÍ es un efecto legítimo: escribe en un sistema externo (el
+  // historial del navegador), no sincroniza estado de React contra estado.
   useEffect(() => {
-    if (!urlRead) return;
+    if (!hydrated) return;
     const params = new URLSearchParams(window.location.search);
     if (colorSlug) params.set("color", colorSlug);
     else params.delete("color");
@@ -110,7 +128,7 @@ export default function ProductVariants({
       "",
       `${window.location.pathname}${qs ? `?${qs}` : ""}`,
     );
-  }, [colorSlug, selectedCapacity, urlRead]);
+  }, [colorSlug, selectedCapacity, hydrated]);
 
   const priceUsd = selectedCapacity?.price_usd ?? product.min_price_usd;
   const stock = effectiveStock(product.stock_status, selectedCapacity);
@@ -123,14 +141,44 @@ export default function ProductVariants({
     .filter(Boolean)
     .join(", ");
 
+  // Los mensajes viven en lib/whatsapp.ts, no escritos acá: es el canal por
+  // el que se cierra la venta y tiene que sonar igual en toda la tienda.
   const waMessage = isOut
-    ? `Hola! ¿Tenés el ${product.name}${variantLabel ? ` (${variantLabel})` : ""}? Me aparece sin stock.`
-    : `Hola! Me interesa el ${product.name}${variantLabel ? ` (${variantLabel})` : ""}. ¿Está disponible?`;
+    ? outOfStockMessage(product.name, variantLabel)
+    : inquiryMessage(product.name, variantLabel);
 
-  const waHref = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(waMessage)}`;
+  const waHref = whatsappUrl(whatsappNumber, waMessage);
 
   const current = gallery[imageIndex] ?? gallery[0] ?? null;
   const currentSrc = imageUrl(current?.storage_path);
+
+  /**
+   * Agrega la VARIANTE, no el producto (CLAUDE.md §4): la clave del ítem es
+   * producto + capacidad + color, así que dos capacidades del mismo modelo
+   * son dos líneas distintas del carrito.
+   *
+   * Se guarda el precio en USD, no en pesos: el peso lo calcula el carrito
+   * con la cotización del momento en que se mira, y recién se congela cuando
+   * se confirma el pedido.
+   */
+  function handleAdd() {
+    addToCart({
+      productId: product.id,
+      slug: product.slug,
+      sku: product.sku,
+      name: product.name,
+      brand: product.brand,
+      // La foto del color elegido, para que la línea del carrito coincida
+      // con lo que el cliente vio en la galería.
+      coverPath: current?.storage_path ?? product.cover_path,
+      colorId: selectedColor?.id ?? null,
+      colorName: selectedColor?.name ?? null,
+      capacityId: selectedCapacity?.id ?? null,
+      capacityGb: selectedCapacity?.capacity_gb ?? null,
+      priceUsd,
+      discountPct: product.discount_transfer_pct,
+    });
+  }
 
   return (
     <>
@@ -195,7 +243,7 @@ export default function ProductVariants({
                 <button
                   key={c.id}
                   type="button"
-                  onClick={() => setColorSlug(c.slug)}
+                  onClick={() => setPickedColor(c.slug)}
                   aria-pressed={active}
                   aria-label={c.name}
                   title={c.name}
@@ -227,7 +275,7 @@ export default function ProductVariants({
                 <button
                   key={c.id}
                   type="button"
-                  onClick={() => setCapacityId(c.id)}
+                  onClick={() => setPickedCapacity(c.id)}
                   aria-pressed={active}
                   className={`flex h-11 items-center rounded-lg border px-4 text-sm transition-colors ${
                     active
@@ -277,15 +325,10 @@ export default function ProductVariants({
           ) : (
             <button
               type="button"
-              onClick={() => {
-                // TODO F4: acá va addItem() del store de Zustand con
-                // product_id + capacity_id + color_id como clave del ítem.
-                setAdded(true);
-                setTimeout(() => setAdded(false), 2200);
-              }}
+              onClick={handleAdd}
               className="h-12 flex-1 rounded-lg bg-accent text-sm font-semibold text-white transition-transform active:scale-[0.98]"
             >
-              {added ? "Agregado ✓" : "Agregar al carrito"}
+              Agregar al carrito
             </button>
           )}
 
@@ -300,12 +343,6 @@ export default function ProductVariants({
           </a>
         </div>
       </div>
-
-      {added && (
-        <p role="status" className="mt-3 text-sm text-ok">
-          Agregado. El carrito se conecta en la próxima fase.
-        </p>
-      )}
     </>
   );
 }
