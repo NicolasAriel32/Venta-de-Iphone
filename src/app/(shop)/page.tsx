@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import brand from "@/brand.config";
 import ProductCard from "@/components/shop/ProductCard";
+import AppleSidebar from "@/components/shop/AppleSidebar";
 import { getCategories, getFeatured, getStoreContext, REVALIDATE_SECONDS } from "@/lib/catalog";
 import { imageUrl } from "@/lib/images";
 
@@ -30,36 +31,36 @@ export default async function HomePage() {
 
   return (
     <>
-      {/* Hero — banner único, no carrusel (decisión 04) */}
-      <section className="mt-4">
-        <div className="relative overflow-hidden rounded-2xl border border-line bg-surface">
-          <div className="relative aspect-[16/9] w-full">
-            <Image
-              src={bannerSrc}
-              alt=""
-              aria-hidden
-              fill
-              priority
-              sizes="(max-width: 768px) 100vw, 720px"
-              className="object-cover"
-            />
+      {/* Nuevo Hero: título gigante sobre fondo naranja + imagen del iPhone */}
+      <section className="mt-6">
+        <div className="rounded-2xl overflow-hidden">
+          <div className="hero-top bg-hero-orange flex items-center justify-center py-12 px-4">
+            <h1 className="hero-title text-center">ENCONTRÁ EL QUE VA CON VOS</h1>
           </div>
-          {/* Velo hacia abajo: el copy se apoya sobre el sector oscuro */}
-          <div
-            aria-hidden
-            className="absolute inset-0 bg-gradient-to-t from-ink via-ink/60 to-transparent"
-          />
-          <div className="absolute inset-0 flex flex-col justify-end gap-3 p-5">
-            <h1 className="font-display text-2xl leading-tight font-bold text-paper">
-              {config?.banner_title || brand.tagline}
-            </h1>
-            <p className="max-w-[28ch] text-sm text-muted">{brand.description}</p>
-            <Link
-              href="/productos"
-              className="tap inline-flex h-11 w-fit items-center rounded-lg bg-accent px-5 text-sm font-semibold text-white"
-            >
-              Ver catálogo
-            </Link>
+
+          <div className="hero-card bg-white p-6 md:p-10 flex flex-col md:flex-row items-start gap-6">
+            <div className="md:flex-2 flex-1 flex items-center justify-center">
+              <Image
+                src="/productos/iphone-17-pro-max-1.webp"
+                alt="iPhone 17 Pro Max (naranja) - vista trasera"
+                width={560}
+                height={420}
+                className="hero-image object-contain floating"
+                priority
+              />
+            </div>
+
+            <div className="md:flex-1 flex-1 text-center md:text-left">
+              <p className="mb-4 text-lg font-semibold text-hero-accent">Lo último en potencia y color.</p>
+              <p className="mb-6 text-sm text-muted">Fondo blanco con detalles naranjas y botón destacado para ver todo el catálogo.</p>
+              <Link href="/productos" className="hero-cta inline-flex items-center justify-center px-6 py-3 text-base font-semibold rounded-md">
+                Ver catálogo
+              </Link>
+            </div>
+
+            <aside className="w-full md:w-72">
+              <AppleSidebar />
+            </aside>
           </div>
         </div>
       </section>
@@ -68,17 +69,17 @@ export default async function HomePage() {
       {categories.length > 0 && (
         <section className="mt-8">
           <h2 className="font-display text-lg font-bold text-paper">Categorías</h2>
-          <ul className="mt-3 grid grid-cols-3 gap-2.5">
+          <ul className="mt-3 grid grid-cols-3 gap-3">
             {categories.map((c) => (
               <li key={c.id}>
                 <Link
                   href={`/productos?cat=${c.slug}`}
-                  className="flex aspect-square flex-col items-center justify-center gap-1.5 rounded-xl border border-line bg-surface p-2 text-center transition-colors hover:border-accent"
+                  className="category-link flex aspect-square flex-col items-center justify-center gap-2 rounded-xl border border-line bg-surface p-3 text-center transition-transform hover:scale-105"
                 >
-                  <span aria-hidden className="text-2xl">
-                    {c.icon}
-                  </span>
-                  <span className="text-[11px] leading-tight text-muted">{c.name}</span>
+                  <div className="category-badge mb-1">
+                    <span aria-hidden className="category-icon">{c.icon}</span>
+                  </div>
+                  <span className="category-name text-sm leading-tight text-paper">{c.name}</span>
                 </Link>
               </li>
             ))}
@@ -98,7 +99,7 @@ export default async function HomePage() {
 
           <ul className="rail mt-3 -mx-4 px-4">
             {featured.map((p, i) => (
-              <li key={p.id} className="w-[160px]">
+              <li key={p.id} className="w-40">
                 <ProductCard product={p} usdRate={usdRate} priority={i < 2} />
               </li>
             ))}

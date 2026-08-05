@@ -74,3 +74,32 @@ export function WhatsAppIcon(props: IconProps) {
     </svg>
   );
 }
+
+export function WarrantyIcon(props: IconProps) {
+  return (
+    <svg {...base} {...props}>
+      <path d="M12 2c-.6 0-2 .5-4 1.2C6 4 4.5 4.6 3.6 5.1 2.6 5.7 2 6.9 2 8.3v3.4c0 4.2 3.1 8 8 9 4.9-1 8-4.8 8-9V8.3c0-1.4-.6-2.6-1.6-3.2-.9-.5-2.4-1.1-4.4-1.1z" />
+      <path d="M9.5 12.5l1.8 1.8L15 11" strokeWidth={1.5} />
+    </svg>
+  );
+}
+
+export function TruckIcon(props: IconProps) {
+  return (
+    <svg {...base} {...props}>
+      <path d="M3 7h11v7H3z" />
+      <path d="M14 9h4l3 3v2" />
+      <circle cx="7.5" cy="16.5" r="1.5" />
+      <circle cx="18.5" cy="16.5" r="1.5" />
+    </svg>
+  );
+}
+
+export function CardIcon(props: IconProps) {
+  return (
+    <svg {...base} {...props}>
+      <rect x="2" y="6" width="20" height="12" rx="2" />
+      <path d="M2 10h20" strokeWidth={1.5} />
+    </svg>
+  );
+}

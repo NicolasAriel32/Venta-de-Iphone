@@ -21,6 +21,15 @@ export default function Footer({
         <p className="font-display text-lg font-bold tracking-tight text-paper">{name}</p>
         <p className="mt-1 text-sm text-muted">{brand.tagline}</p>
 
+        <div className="mt-4">
+          <p className="text-sm text-paper font-medium">Contacto:</p>
+          <ul className="text-sm text-muted mt-2 space-y-1">
+            <li>Teléfono: +54 9 11 1234 5678</li>
+            <li>Correo personal: nicolas.gimenez38@gmail.com</li>
+            <li>Correo empresarial: gestion.inteligente00@gmail.com</li>
+          </ul>
+        </div>
+
         {categories.length > 0 && (
           <div className="mt-6 grid grid-cols-2 gap-x-4 gap-y-2">
             {categories.slice(0, 6).map((c) => (

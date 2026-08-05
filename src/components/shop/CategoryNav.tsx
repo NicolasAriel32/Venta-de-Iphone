@@ -18,7 +18,7 @@ export default function CategoryNav({
 
   return (
     <nav aria-label="Categorías" className="border-b border-line bg-ink">
-      <ul className="rail mx-auto max-w-5xl px-4 py-2.5">
+      <ul className="rail mx-auto max-w-5xl px-4 py-3">
         {categories.map((c) => {
           const isActive = active === c.slug;
           return (
@@ -26,13 +26,16 @@ export default function CategoryNav({
               <Link
                 href={`/productos?cat=${c.slug}`}
                 aria-current={isActive ? "page" : undefined}
-                className={`tap flex h-9 items-center rounded-full border px-3.5 text-sm whitespace-nowrap transition-colors ${
+                className={`tap flex h-11 items-center gap-3 rounded-full border px-3.5 text-sm whitespace-nowrap transition-all transform-gpu ${
                   isActive
-                    ? "border-accent bg-accent/10 text-paper"
-                    : "border-line text-muted hover:border-accent hover:text-paper"
+                    ? "border-accent bg-accent/10 text-paper shadow-accent"
+                    : "border-line text-muted hover:border-accent hover:text-paper hover:scale-105"
                 }`}
               >
-                {c.name}
+                <span className="inline-flex items-center justify-center category-nav-badge">
+                  <span className="text-xl">{c.icon}</span>
+                </span>
+                <span>{c.name}</span>
               </Link>
             </li>
           );

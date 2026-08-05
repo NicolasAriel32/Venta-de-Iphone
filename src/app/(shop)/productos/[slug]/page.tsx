@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import brand from "@/brand.config";
 import ProductVariants from "@/components/shop/ProductVariants";
-import { ChevronLeftIcon } from "@/components/ui/icons";
+import { ChevronLeftIcon, WarrantyIcon, TruckIcon, CardIcon } from "@/components/ui/icons";
 import { getAllProductSlugs, getProductBySlug, getStoreContext } from "@/lib/catalog";
 import { absoluteImageUrl } from "@/lib/images";
 import { formatCapacity, usdToArs } from "@/lib/pricing";
@@ -75,7 +75,8 @@ export default async function ProductoPage({ params }: Props) {
 
   return (
     <article className="pb-20">
-      <nav className="mt-3 flex items-center gap-1 text-sm">
+      <div className="product-page-hero theme-orange rounded-2xl p-4 mb-6">
+        <nav className="mt-3 flex items-center gap-1 text-sm">
         <Link
           href={`/productos?cat=${product.category_slug}`}
           className="tap flex h-11 items-center gap-1 text-muted hover:text-paper"
@@ -85,24 +86,27 @@ export default async function ProductoPage({ params }: Props) {
         </Link>
       </nav>
 
-      <p className="text-[11px] tracking-wider text-muted uppercase">
-        {product.brand} · SKU {product.sku}
-      </p>
-      <h1 className="mt-1 font-display text-2xl leading-tight font-bold text-paper">
-        {product.name}
-      </h1>
+        <p className="text-[11px] tracking-wider text-muted uppercase mt-3">
+          {product.brand} · SKU {product.sku}
+        </p>
+        <h1 className="mt-1 font-display text-2xl leading-tight font-bold text-white">
+          {product.name}
+        </h1>
+      </div>
 
-      <ProductVariants
-        product={product}
-        usdRate={usdRate}
-        paymentNote={paymentNote}
-        whatsappNumber={whatsapp}
-      />
+      <div className="product-card-white rounded-2xl bg-white p-5">
+        <ProductVariants
+          product={product}
+          usdRate={usdRate}
+          paymentNote={paymentNote}
+          whatsappNumber={whatsapp}
+        />
+      </div>
 
       {product.description && (
         <section className="mt-8">
           <h2 className="font-display text-lg font-bold text-paper">Descripción</h2>
-          <p className="mt-2 text-sm leading-relaxed text-muted">{product.description}</p>
+          <p className="mt-2 product-description">{product.description}</p>
         </section>
       )}
 
@@ -121,17 +125,39 @@ export default async function ProductoPage({ params }: Props) {
       )}
 
       <section className="mt-8 rounded-2xl border border-line bg-surface p-5">
-        <ul className="space-y-2.5 text-sm text-muted">
-          <li>{config?.warranty_note || brand.notes.warranty}</li>
-          <li>{config?.shipping_note || brand.notes.shipping}</li>
-          <li>{paymentNote}</li>
-        </ul>
+        <div className="flex flex-col sm:flex-row gap-4">
+          <div className="flex items-start gap-3">
+            <WarrantyIcon className="text-emerald-400" />
+            <div>
+              <div className="text-sm text-paper font-medium">Garantía</div>
+              <div className="text-xs text-muted">6 meses de garantía</div>
+            </div>
+          </div>
+
+          <div className="flex items-start gap-3">
+            <TruckIcon className="text-paper" />
+            <div>
+              <div className="text-sm text-paper font-medium">Envíos</div>
+              <div className="text-xs text-muted">Envíos a todo el país</div>
+            </div>
+          </div>
+
+          <div className="flex items-start gap-3">
+            <CardIcon className="text-paper" />
+            <div>
+              <div className="text-sm text-paper font-medium">Medios de pago</div>
+              <div className="text-xs text-muted">Crédito en cuotas y tarjetas</div>
+            </div>
+          </div>
+        </div>
       </section>
 
       {/* Transparencia sobre de dónde sale el precio en pesos. */}
       {usdRate > 0 && (
-        <p className="mt-4 text-xs text-muted">
-          {rateLabel(rate)} · 1 USD = {new Intl.NumberFormat("es-AR").format(usdRate)}
+        <p className="mt-4">
+          <span className="usd-rate" aria-hidden>
+            {rateLabel(rate)} · 1 USD = <span className="usd-value">{new Intl.NumberFormat("es-AR").format(usdRate)}</span>
+          </span>
         </p>
       )}
 

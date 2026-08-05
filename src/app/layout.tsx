@@ -1,17 +1,16 @@
 import type { Metadata, Viewport } from "next";
-import { Archivo, Archivo_Narrow } from "next/font/google";
+import { Inter, Playfair_Display } from "next/font/google";
 import brand from "@/brand.config";
 import "./globals.css";
 
-const body = Archivo({
+const body = Inter({
   subsets: ["latin"],
   variable: "--ff-body",
   display: "swap",
 });
 
-/* Display condensada: los precios son el elemento tipográfico protagonista.
-   Ambas son variable fonts, así que no se declara `weight`. */
-const display = Archivo_Narrow({
+/* Display más profesional para encabezados y títulos grandes. */
+const display = Playfair_Display({
   subsets: ["latin"],
   variable: "--ff-display",
   display: "swap",
