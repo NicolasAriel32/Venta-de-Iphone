@@ -149,7 +149,7 @@ export default function ProductVariants({
           <div
             role="img"
             aria-label={product.name}
-            className="flex h-full w-full flex-col items-center justify-center gap-2 bg-gradient-to-br from-line/60 to-surface p-6 text-center"
+            className="flex h-full w-full flex-col items-center justify-center gap-2 bg-linear-to-br from-line/60 to-surface p-6 text-center"
           >
             <span className="font-display text-xs tracking-[0.2em] text-muted uppercase">
               {product.brand}
@@ -261,7 +261,7 @@ export default function ProductVariants({
 
       {/* Barra fija de acción — zona del pulgar */}
       <div
-        className="fixed inset-x-0 bottom-0 z-30 border-t border-line bg-ink/95 backdrop-blur-sm"
+        className="product-action-bar fixed inset-x-0 bottom-0 z-30 border-t border-line bg-ink/95 backdrop-blur-sm"
         style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
       >
         <div className="mx-auto flex max-w-5xl items-center gap-2 px-4 py-3">

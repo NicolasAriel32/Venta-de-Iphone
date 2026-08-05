@@ -133,3 +133,247 @@ button {
     border-radius: 6px;
   }
 }
+
+/* ---------------------------------------------------------------
+   Hero personalizado para la home
+   - Título gigante centrado sobre fondo naranja
+   - Card blanco con imagen del iPhone y CTA brillante
+   --------------------------------------------------------------- */
+
+:root {
+  --hero-green: #10b981; /* emerald-500 */
+  --hero-accent: #059669; /* emerald-600 */
+}
+
+.hero-top {
+  background: linear-gradient(90deg, var(--hero-green), #34d399);
+}
+
+/* Orange theme variant to match the primary hero when needed */
+.theme-orange { --orange-50: #fff7ed; }
+.theme-orange .product-page-hero {
+  background: linear-gradient(90deg, #ff7a00, #ff944d);
+  padding: 1.25rem;
+}
+.theme-orange .product-page-hero p,
+.theme-orange .product-page-hero a { color: rgba(255,255,255,0.9); }
+.product-card-white { background: white; color: var(--color-ink); }
+.product-card-white .font-display { color: var(--color-ink); }
+
+/* Ensure CTA and buttons inside white card keep accent */
+.product-card-white .hero-cta { background: linear-gradient(90deg, #ff8a3d, #ff7a00); color: #fff; }
+
+/* Improve contrast for text inside white card and reserve space to avoid fixed bar overlap */
+.product-card-white {
+  padding-bottom: 3.5rem; /* leave room for fixed action bar */
+}
+.product-card-white .text-paper { color: var(--color-ink) !important; }
+.product-card-white .text-muted { color: rgba(0,0,0,0.56) !important; }
+.product-card-white .text-ok { color: #059669 !important; }
+
+/* If PriceTag uses fixed min-height, ensure internal elements wrap and don't overlap */
+.product-card-white .min-h-\[196px\] { min-height: 196px; }
+.product-card-white .h-px { background: #e6e6e6; }
+
+/* On small screens reserve more space so the fixed action bar never covers price */
+@media (max-width: 640px) {
+  .product-card-white {
+    padding-bottom: calc(7.5rem + env(safe-area-inset-bottom));
+  }
+}
+
+/* Style the fixed action bar to be slightly translucent and clearly separated */
+.product-action-bar {
+  background: linear-gradient(180deg, rgba(11,13,16,0.72), rgba(11,13,16,0.56));
+  border-top-color: rgba(255,255,255,0.06);
+  backdrop-filter: blur(6px);
+}
+.product-action-bar .mx-auto { padding-top: 0.25rem; padding-bottom: 0.25rem; }
+.product-action-bar a,
+.product-action-bar button { box-shadow: 0 6px 20px rgba(11,13,16,0.12); }
+
+.hero-title {
+  font-family: var(--font-display);
+  font-weight: 900;
+  color: white;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+  font-size: clamp(28px, 8vw, 84px);
+  line-height: 0.95;
+}
+
+.hero-card {
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(11,13,16,0.06);
+}
+
+.hero-image {
+  width: min(420px, 80%);
+  height: auto;
+}
+
+.text-hero-accent { color: var(--hero-accent); }
+
+.hero-cta {
+  background: linear-gradient(90deg, var(--hero-accent), #34d399);
+  color: #fff;
+  border: 2px solid rgba(255,138,61,0.0);
+  box-shadow: 0 6px 18px rgba(255,122,0,0.18);
+  transition: transform .12s ease, box-shadow .2s ease;
+  position: relative;
+  overflow: visible;
+  animation: cta-blink 1.6s infinite, cta-glow 2.8s infinite;
+}
+
+.hero-cta:active { transform: translateY(1px); }
+
+@keyframes cta-blink {
+  0%, 60% { opacity: 1; }
+  61%, 100% { opacity: 0.85; }
+}
+
+@keyframes cta-glow {
+  0% { box-shadow: 0 0 0 0 rgba(5,150,105,0.35); }
+  50% { box-shadow: 0 0 24px 8px rgba(5,150,105,0.08); }
+  100% { box-shadow: 0 0 0 0 rgba(5,150,105,0.0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-cta { animation: none; }
+}
+
+/* Floating effect for product image to create motion and retain attention */
+.floating {
+  animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+  0% { transform: translateY(0) rotate(-1deg); }
+  50% { transform: translateY(-8px) rotate(1deg); }
+  100% { transform: translateY(0) rotate(-1deg); }
+}
+
+/* Sidebar card and item entrance animations (staggered) */
+.sidebar-card { background: linear-gradient(180deg, rgba(255,255,255,0.02), transparent); }
+.sidebar-item { transform: translateY(6px); opacity: 0; animation: slideUp .6s forwards; }
+.animation-delay-0 { animation-delay: 0.05s; }
+.animation-delay-1 { animation-delay: 0.18s; }
+.animation-delay-2 { animation-delay: 0.32s; }
+
+@keyframes slideUp {
+  to { transform: translateY(0); opacity: 1; }
+}
+
+/* Improve typographic tone: tighter headings, professional serif for titles */
+.hero-top .hero-title { font-family: var(--ff-display); letter-spacing: -0.03em; }
+.sidebar-card h3 { font-family: var(--ff-display); }
+
+/* AI background for the sidebar */
+.bg-ai-apple {
+  background-image: url('/ai-apple-bg.svg');
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.bg-ai-apple::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(11,13,16,0.6), rgba(11,13,16,0.35));
+  pointer-events: none;
+}
+
+/* Geometric logo position */
+.apple-logo { width: 36px; height: 36px; }
+
+/* Tap / press feedback for sidebar items */
+.sidebar-item a {
+  display: block;
+  transition: transform .12s ease, box-shadow .12s ease, opacity .12s ease;
+  touch-action: manipulation;
+}
+.sidebar-item:active a,
+.sidebar-item a:active {
+  transform: translateY(3px) scale(0.995);
+  opacity: 0.96;
+}
+
+/* CTA on sidebar */
+.sidebar-cta {
+  display: inline-block;
+  padding: 8px 12px;
+  background: rgba(255,255,255,0.06);
+  border-radius: 8px;
+  transition: transform .12s ease, box-shadow .18s ease;
+}
+.sidebar-cta:active { transform: translateY(2px) scale(0.998); }
+
+/* Make product cards respond to tap like hover */
+.group { transition: transform .12s ease, box-shadow .18s ease; }
+.group:active { transform: translateY(4px) scale(0.997); }
+
+/* Category badges and improved visuals */
+.category-link { }
+.category-badge {
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, rgba(255,138,61,0.12), rgba(255,200,140,0.06));
+  box-shadow: 0 6px 16px rgba(11,13,16,0.06);
+}
+.category-icon { font-size: 1.5rem; }
+.category-name { color: var(--color-paper); }
+.category-link:hover .category-badge { transform: translateY(-4px) scale(1.03); }
+.category-link:hover .category-name { color: var(--color-paper); }
+
+/* Make news items more readable on the AI background */
+.sidebar-item a { background: rgba(255,255,255,0.04); padding: 8px; border-radius: 10px; }
+.sidebar-item .news-title { color: #fff; font-weight: 600; }
+.sidebar-item .news-date { color: rgba(255,255,255,0.8); }
+
+/* Slightly reduce overlay darkness so text pops more */
+.bg-ai-apple::after { background: linear-gradient(180deg, rgba(11,13,16,0.45), rgba(11,13,16,0.18)); }
+
+/* USD rate highlight: larger, green, subtle outline and gentle pulse */
+.usd-rate {
+  display: inline-block;
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: rgba(16,185,129,0.06); /* light green wash */
+  color: var(--hero-accent);
+  font-weight: 700;
+  font-size: 1rem;
+  -webkit-text-stroke: 0.6px rgba(0,0,0,0.08);
+  text-shadow: 0 1px 0 rgba(255,255,255,0.02), 0 0 6px rgba(16,185,129,0.06);
+  animation: rate-breathe 3s ease-in-out infinite;
+}
+
+.usd-value { font-feature-settings: "tnum" 1; font-variant-numeric: tabular-nums; }
+
+@keyframes rate-breathe {
+  0% { transform: translateY(0); box-shadow: 0 0 0 0 rgba(16,185,129,0.06); }
+  50% { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(16,185,129,0.06); }
+  100% { transform: translateY(0); box-shadow: 0 0 0 0 rgba(16,185,129,0.0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .usd-rate { animation: none; transform: none; }
+}
+
+/* Product description: larger, higher contrast and more readable on mobile */
+.product-description {
+  font-size: clamp(15px, 3.6vw, 18px);
+  line-height: 1.65;
+  color: var(--color-paper);
+  letter-spacing: 0.01em;
+  margin-top: 0.5rem;
+}
+
+@media (min-width: 768px) {
+  .product-description { font-size: 17px; }
+}
