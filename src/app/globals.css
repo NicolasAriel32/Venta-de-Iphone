@@ -135,142 +135,179 @@ button {
 }
 
 /* ---------------------------------------------------------------
-   Hero personalizado para la home
-   - Título gigante centrado sobre fondo naranja
-   - Card blanco con imagen del iPhone y CTA brillante
+   Sistema visual — "Ink & Signal" (CLAUDE.md §3, decisión #45)
+   Un solo lenguaje en toda la tienda: ink profundo + resplandor de
+   acento. Antes había un tema naranja/blanco solo en el hero y el
+   detalle de producto, que rompía la cohesión apenas se navegaba
+   una pantalla más allá de la home. Se unifica todo acá.
    --------------------------------------------------------------- */
 
-:root {
-  --hero-green: #10b981; /* emerald-500 */
-  --hero-accent: #059669; /* emerald-600 */
+/* Textura de atmósfera reutilizable: resplandor radial de acento +
+   grano fino, CSS puro. Reemplaza a las imágenes/temas sueltos. */
+@utility atmosphere {
+  position: relative;
+  isolation: isolate;
+  background:
+    radial-gradient(120% 100% at 12% -10%, color-mix(in srgb, var(--color-accent) 22%, transparent), transparent 55%),
+    radial-gradient(90% 80% at 100% 15%, color-mix(in srgb, var(--color-accent) 12%, transparent), transparent 60%),
+    var(--color-ink);
 }
 
-.hero-top {
-  background: linear-gradient(90deg, var(--hero-green), #34d399);
-}
-
-/* Orange theme variant to match the primary hero when needed */
-.theme-orange { --orange-50: #fff7ed; }
-.theme-orange .product-page-hero {
-  background: linear-gradient(90deg, #ff7a00, #ff944d);
-  padding: 1.25rem;
-}
-.theme-orange .product-page-hero p,
-.theme-orange .product-page-hero a { color: rgba(255,255,255,0.9); }
-.product-card-white { background: white; color: var(--color-ink); }
-.product-card-white .font-display { color: var(--color-ink); }
-
-/* Ensure CTA and buttons inside white card keep accent */
-.product-card-white .hero-cta { background: linear-gradient(90deg, #ff8a3d, #ff7a00); color: #fff; }
-
-/* Improve contrast for text inside white card and reserve space to avoid fixed bar overlap */
-.product-card-white {
-  padding-bottom: 3.5rem; /* leave room for fixed action bar */
-}
-.product-card-white .text-paper { color: var(--color-ink) !important; }
-.product-card-white .text-muted { color: rgba(0,0,0,0.56) !important; }
-.product-card-white .text-ok { color: #059669 !important; }
-
-/* If PriceTag uses fixed min-height, ensure internal elements wrap and don't overlap */
-.product-card-white .min-h-\[196px\] { min-height: 196px; }
-.product-card-white .h-px { background: #e6e6e6; }
-
-/* On small screens reserve more space so the fixed action bar never covers price */
-@media (max-width: 640px) {
-  .product-card-white {
-    padding-bottom: calc(7.5rem + env(safe-area-inset-bottom));
+/* Revelado escalonado de entrada — un solo momento bien orquestado
+   en vez de animaciones sueltas por todos lados (blink, float, etc). */
+@keyframes reveal-up {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
   }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.reveal {
+  animation: reveal-up 0.55s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.reveal-1 { animation-delay: 0.06s; }
+.reveal-2 { animation-delay: 0.13s; }
+.reveal-3 { animation-delay: 0.2s; }
+.reveal-4 { animation-delay: 0.27s; }
+.reveal-5 { animation-delay: 0.34s; }
+
+/* Compat: código existente usa esta convención de nombre. */
+.animation-delay-0 { animation-delay: 0.06s; }
+.animation-delay-1 { animation-delay: 0.18s; }
+.animation-delay-2 { animation-delay: 0.32s; }
+
+/* ---------------------------------------------------------------
+   Hero de home — CLAUDE.md §6 F3: un banner, no carrusel.
+   --------------------------------------------------------------- */
+
+.hero-shell {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--color-line);
+  background:
+    radial-gradient(120% 140% at 15% -15%, color-mix(in srgb, var(--color-accent) 30%, transparent), transparent 60%),
+    radial-gradient(90% 100% at 100% 10%, color-mix(in srgb, var(--color-accent) 15%, transparent), transparent 65%),
+    linear-gradient(180deg, var(--color-surface), var(--color-ink));
+}
+
+.hero-kicker {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+}
+
+.hero-title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  color: var(--color-paper);
+  letter-spacing: -0.03em;
+  font-size: clamp(30px, 8.5vw, 60px);
+  line-height: 0.98;
+}
+
+.hero-image {
+  width: min(320px, 78%);
+  height: auto;
+  filter: drop-shadow(0 28px 50px rgba(0, 0, 0, 0.55));
+}
+
+.text-hero-accent {
+  color: var(--color-accent);
+}
+
+.hero-cta {
+  background: linear-gradient(135deg, var(--color-accent), #60a5fa);
+  color: #fff;
+  box-shadow: 0 12px 28px -8px color-mix(in srgb, var(--color-accent) 65%, transparent);
+  transition: transform 0.15s ease, box-shadow 0.2s ease;
+}
+.hero-cta:active {
+  transform: translateY(1px) scale(0.98);
+}
+
+/* ---------------------------------------------------------------
+   Detalle de producto — reemplaza el card blanco/naranja anterior.
+   --------------------------------------------------------------- */
+
+.detail-hero {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--color-line);
+  background:
+    radial-gradient(140% 160% at 100% -20%, color-mix(in srgb, var(--color-accent) 24%, transparent), transparent 60%),
+    linear-gradient(180deg, var(--color-surface), var(--color-ink));
 }
 
 /* Style the fixed action bar to be slightly translucent and clearly separated */
 .product-action-bar {
-  background: linear-gradient(180deg, rgba(11,13,16,0.72), rgba(11,13,16,0.56));
-  border-top-color: rgba(255,255,255,0.06);
+  background: linear-gradient(180deg, rgba(11, 13, 16, 0.72), rgba(11, 13, 16, 0.56));
+  border-top-color: rgba(255, 255, 255, 0.06);
   backdrop-filter: blur(6px);
 }
 .product-action-bar .mx-auto { padding-top: 0.25rem; padding-bottom: 0.25rem; }
 .product-action-bar a,
-.product-action-bar button { box-shadow: 0 6px 20px rgba(11,13,16,0.12); }
+.product-action-bar button { box-shadow: 0 6px 20px rgba(11, 13, 16, 0.35); }
 
-.hero-title {
-  font-family: var(--font-display);
-  font-weight: 900;
-  color: white;
-  text-transform: uppercase;
-  letter-spacing: -0.02em;
-  font-size: clamp(28px, 8vw, 84px);
-  line-height: 0.95;
-}
+/* ---------------------------------------------------------------
+   Ficha de precio — elemento firma (CLAUDE.md §3).
+   Anillo de degradé de acento sobre el card oscuro, sin depender
+   de ninguna librería: es un borde de 1 px enmascarado.
+   --------------------------------------------------------------- */
 
-.hero-card {
-  border-radius: 12px;
-  box-shadow: 0 10px 30px rgba(11,13,16,0.06);
-}
-
-.hero-image {
-  width: min(420px, 80%);
-  height: auto;
-}
-
-.text-hero-accent { color: var(--hero-accent); }
-
-.hero-cta {
-  background: linear-gradient(90deg, var(--hero-accent), #34d399);
-  color: #fff;
-  border: 2px solid rgba(255,138,61,0.0);
-  box-shadow: 0 6px 18px rgba(255,122,0,0.18);
-  transition: transform .12s ease, box-shadow .2s ease;
+.price-card {
   position: relative;
-  overflow: visible;
-  animation: cta-blink 1.6s infinite, cta-glow 2.8s infinite;
+  border-radius: 1rem;
+  border: 1px solid var(--color-line);
+  background: linear-gradient(160deg, var(--color-surface), var(--color-ink));
+  overflow: hidden;
 }
 
-.hero-cta:active { transform: translateY(1px); }
-
-@keyframes cta-blink {
-  0%, 60% { opacity: 1; }
-  61%, 100% { opacity: 0.85; }
+.price-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  padding: 1px;
+  border-radius: inherit;
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--color-accent) 65%, transparent),
+    transparent 45%,
+    color-mix(in srgb, var(--color-accent) 25%, transparent)
+  );
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
 }
 
-@keyframes cta-glow {
-  0% { box-shadow: 0 0 0 0 rgba(5,150,105,0.35); }
-  50% { box-shadow: 0 0 24px 8px rgba(5,150,105,0.08); }
-  100% { box-shadow: 0 0 0 0 rgba(5,150,105,0.0); }
+.price-figure {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .hero-cta { animation: none; }
-}
+/* ---------------------------------------------------------------
+   Sidebar (Últimas de Apple)
+   --------------------------------------------------------------- */
 
-/* Floating effect for product image to create motion and retain attention */
-.floating {
-  animation: float 6s ease-in-out infinite;
-}
-
-@keyframes float {
-  0% { transform: translateY(0) rotate(-1deg); }
-  50% { transform: translateY(-8px) rotate(1deg); }
-  100% { transform: translateY(0) rotate(-1deg); }
-}
-
-/* Sidebar card and item entrance animations (staggered) */
-.sidebar-card { background: linear-gradient(180deg, rgba(255,255,255,0.02), transparent); }
-.sidebar-item { transform: translateY(6px); opacity: 0; animation: slideUp .6s forwards; }
-.animation-delay-0 { animation-delay: 0.05s; }
-.animation-delay-1 { animation-delay: 0.18s; }
-.animation-delay-2 { animation-delay: 0.32s; }
+.sidebar-card { background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent); }
+.sidebar-item { transform: translateY(6px); opacity: 0; animation: slideUp 0.6s forwards; }
 
 @keyframes slideUp {
   to { transform: translateY(0); opacity: 1; }
 }
 
-/* Improve typographic tone: tighter headings, professional serif for titles */
-.hero-top .hero-title { font-family: var(--ff-display); letter-spacing: -0.03em; }
-.sidebar-card h3 { font-family: var(--ff-display); }
+.sidebar-card h3 { font-family: var(--font-display); }
 
-/* AI background for the sidebar */
+/* Fondo de la sidebar: SVG propio en tonos ink/acento (ver public/ai-apple-bg.svg) */
 .bg-ai-apple {
-  background-image: url('/ai-apple-bg.svg');
+  background-image: url("/ai-apple-bg.svg");
   background-size: cover;
   background-position: center;
   position: relative;
@@ -278,20 +315,21 @@ button {
 }
 
 .bg-ai-apple::after {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, rgba(11,13,16,0.6), rgba(11,13,16,0.35));
+  background: linear-gradient(180deg, rgba(11, 13, 16, 0.55), rgba(11, 13, 16, 0.25));
   pointer-events: none;
 }
 
-/* Geometric logo position */
 .apple-logo { width: 36px; height: 36px; }
 
-/* Tap / press feedback for sidebar items */
 .sidebar-item a {
   display: block;
-  transition: transform .12s ease, box-shadow .12s ease, opacity .12s ease;
+  background: rgba(255, 255, 255, 0.04);
+  padding: 8px;
+  border-radius: 10px;
+  transition: transform 0.12s ease, box-shadow 0.12s ease, opacity 0.12s ease;
   touch-action: manipulation;
 }
 .sidebar-item:active a,
@@ -299,23 +337,22 @@ button {
   transform: translateY(3px) scale(0.995);
   opacity: 0.96;
 }
+.sidebar-item .news-title { color: var(--color-paper); font-weight: 600; }
+.sidebar-item .news-date { color: rgba(255, 255, 255, 0.65); }
 
-/* CTA on sidebar */
 .sidebar-cta {
   display: inline-block;
   padding: 8px 12px;
-  background: rgba(255,255,255,0.06);
+  background: rgba(255, 255, 255, 0.06);
   border-radius: 8px;
-  transition: transform .12s ease, box-shadow .18s ease;
+  transition: transform 0.12s ease, box-shadow 0.18s ease;
 }
 .sidebar-cta:active { transform: translateY(2px) scale(0.998); }
 
-/* Make product cards respond to tap like hover */
-.group { transition: transform .12s ease, box-shadow .18s ease; }
-.group:active { transform: translateY(4px) scale(0.997); }
+/* ---------------------------------------------------------------
+   Categorías, cards y feedback táctil
+   --------------------------------------------------------------- */
 
-/* Category badges and improved visuals */
-.category-link { }
 .category-badge {
   width: 56px;
   height: 56px;
@@ -323,46 +360,54 @@ button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, rgba(255,138,61,0.12), rgba(255,200,140,0.06));
-  box-shadow: 0 6px 16px rgba(11,13,16,0.06);
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--color-accent) 20%, transparent),
+    color-mix(in srgb, var(--color-accent) 6%, transparent)
+  );
+  box-shadow: 0 6px 16px rgba(11, 13, 16, 0.35);
+  transition: transform 0.2s ease;
 }
 .category-icon { font-size: 1.5rem; }
 .category-name { color: var(--color-paper); }
-.category-link:hover .category-badge { transform: translateY(-4px) scale(1.03); }
-.category-link:hover .category-name { color: var(--color-paper); }
+.category-link:hover .category-badge,
+.category-link:active .category-badge { transform: translateY(-4px) scale(1.04); }
 
-/* Make news items more readable on the AI background */
-.sidebar-item a { background: rgba(255,255,255,0.04); padding: 8px; border-radius: 10px; }
-.sidebar-item .news-title { color: #fff; font-weight: 600; }
-.sidebar-item .news-date { color: rgba(255,255,255,0.8); }
+/* Chip de categoría activa en CategoryNav (antes una clase muerta). */
+@utility shadow-accent {
+  box-shadow: 0 6px 20px -4px color-mix(in srgb, var(--color-accent) 55%, transparent);
+}
 
-/* Slightly reduce overlay darkness so text pops more */
-.bg-ai-apple::after { background: linear-gradient(180deg, rgba(11,13,16,0.45), rgba(11,13,16,0.18)); }
+/* Badge circular detrás del ícono en CategoryNav (idem, antes muerta). */
+.category-nav-badge {
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-accent) 14%, transparent);
+}
 
-/* USD rate highlight: larger, green, subtle outline and gentle pulse */
+/* Cards del listado responden al toque como si fuera hover. */
+.group { transition: transform 0.12s ease, box-shadow 0.18s ease; }
+.group:active { transform: translateY(4px) scale(0.997); }
+
+/* USD rate: chip discreto, en tono --ok (dato "vivo"), con pulso suave. */
 .usd-rate {
   display: inline-block;
   padding: 6px 10px;
   border-radius: 8px;
-  background: rgba(16,185,129,0.06); /* light green wash */
-  color: var(--hero-accent);
+  background: color-mix(in srgb, var(--color-ok) 10%, transparent);
+  color: var(--color-ok);
   font-weight: 700;
   font-size: 1rem;
-  -webkit-text-stroke: 0.6px rgba(0,0,0,0.08);
-  text-shadow: 0 1px 0 rgba(255,255,255,0.02), 0 0 6px rgba(16,185,129,0.06);
   animation: rate-breathe 3s ease-in-out infinite;
 }
 
 .usd-value { font-feature-settings: "tnum" 1; font-variant-numeric: tabular-nums; }
 
 @keyframes rate-breathe {
-  0% { transform: translateY(0); box-shadow: 0 0 0 0 rgba(16,185,129,0.06); }
-  50% { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(16,185,129,0.06); }
-  100% { transform: translateY(0); box-shadow: 0 0 0 0 rgba(16,185,129,0.0); }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .usd-rate { animation: none; transform: none; }
+  0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-ok) 20%, transparent); }
+  50% { box-shadow: 0 8px 20px -4px color-mix(in srgb, var(--color-ok) 25%, transparent); }
+  100% { box-shadow: 0 0 0 0 transparent; }
 }
 
 /* Product description: larger, higher contrast and more readable on mobile */

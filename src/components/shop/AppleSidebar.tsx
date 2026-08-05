@@ -29,7 +29,7 @@ export default function AppleSidebar() {
         <div className="apple-logo" aria-hidden>
           <svg width="36" height="36" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
             <rect x="6" y="6" width="88" height="88" rx="16" fill="#fff" opacity="0.06" />
-            <polygon points="50,18 72,40 62,74 38,74 28,40" fill="#ff8a3d" />
+            <polygon points="50,18 72,40 62,74 38,74 28,40" fill="#3B82F6" />
           </svg>
         </div>
       </div>

@@ -1,4 +1,5 @@
 import { buildPrice } from "@/lib/pricing";
+import { CardIcon } from "@/components/ui/icons";
 
 /**
  * ELEMENTO FIRMA (CLAUDE.md §3).
@@ -31,7 +32,7 @@ export default function PriceTag({
   // un número inventado es peor que no mostrar ninguno.
   if (!usdRate) {
     return (
-      <div className="rounded-2xl border border-line bg-surface p-5">
+      <div className="price-card p-5">
         <p className="text-sm text-paper">No pudimos cargar el precio.</p>
         <p className="mt-1 text-sm text-muted">
           Escribinos por WhatsApp y te lo pasamos al instante.
@@ -45,11 +46,11 @@ export default function PriceTag({
   if (compact) {
     return (
       <div>
-        <p className="font-display text-xl leading-none font-bold text-paper">
+        <p className="price-figure font-display text-xl leading-none font-extrabold text-paper">
           {price.formatted.ars}
         </p>
         {price.hasDiscount && (
-          <p className="mt-1 text-xs text-ok">
+          <p className="mt-1 text-xs font-medium text-ok">
             {price.formatted.transferArs} con transferencia
           </p>
         )}
@@ -58,23 +59,30 @@ export default function PriceTag({
   }
 
   return (
-    <div className="min-h-[196px] rounded-2xl border border-line bg-surface p-5">
-      <p className="font-display text-4xl leading-none font-bold tracking-tight text-paper">
+    <div className="price-card min-h-[216px] p-5">
+      <span className="hero-kicker">Precio de contado</span>
+
+      <p className="price-figure font-display mt-1 text-5xl leading-none font-extrabold tracking-tight text-paper">
         {price.formatted.ars}
       </p>
-      <p className="mt-1.5 text-sm text-muted">{price.formatted.usd}</p>
+      <p className="mt-2 text-sm text-muted">{price.formatted.usd} · referencia</p>
 
       {/* Sin ahorro real no se muestra nada: ver PriceView.hasDiscount */}
       {price.hasDiscount && (
         <>
           <div className="my-4 h-px bg-line" />
 
-          <p className="font-display text-2xl leading-none font-bold text-ok">
+          <div className="flex items-center gap-2">
+            <span className="inline-flex items-center rounded-full bg-ok/15 px-2 py-0.5 text-[11px] font-bold tracking-wide text-ok uppercase">
+              −{price.discountPct}%
+            </span>
+            <span className="text-xs text-muted">con transferencia</span>
+          </div>
+          <p className="price-figure font-display mt-1.5 text-3xl leading-none font-extrabold text-ok">
             {price.formatted.transferArs}
           </p>
           <p className="mt-1.5 text-sm text-muted">
-            con transferencia · {price.discountPct}% off · ahorrás{" "}
-            {price.formatted.savingsArs}
+            ahorrás {price.formatted.savingsArs}
           </p>
         </>
       )}
@@ -82,8 +90,13 @@ export default function PriceTag({
       {paymentNote && (
         <>
           <div className="my-4 h-px bg-line" />
-          <p className="flex items-start gap-2 text-sm text-paper">
-            <span aria-hidden>💳</span>
+          <p className="flex items-start gap-2.5 text-sm text-paper">
+            <span
+              aria-hidden
+              className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-accent/15 text-accent"
+            >
+              <CardIcon className="h-3.5 w-3.5" />
+            </span>
             <span>{paymentNote}</span>
           </p>
         </>

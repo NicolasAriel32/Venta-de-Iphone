@@ -1,16 +1,22 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, Playfair_Display } from "next/font/google";
+import { IBM_Plex_Sans, Bricolage_Grotesque } from "next/font/google";
 import brand from "@/brand.config";
 import "./globals.css";
 
-const body = Inter({
+/* Body neutral y técnico — legible en precios largos y specs. Variable (100-700). */
+const body = IBM_Plex_Sans({
   subsets: ["latin"],
   variable: "--ff-body",
   display: "swap",
 });
 
-/* Display más profesional para encabezados y títulos grandes. */
-const display = Playfair_Display({
+/**
+ * Display — el elemento tipográfico protagonista (CLAUDE.md §3).
+ * Variable font de peso alto: los precios y títulos usan extremos de peso
+ * (800/900), nunca un 500 tibio. Reemplaza a Playfair: una serif editorial
+ * no comunica "precio claro" en una tienda de tecnología.
+ */
+const display = Bricolage_Grotesque({
   subsets: ["latin"],
   variable: "--ff-display",
   display: "swap",

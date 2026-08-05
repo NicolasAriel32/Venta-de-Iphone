@@ -31,34 +31,37 @@ export default async function HomePage() {
 
   return (
     <>
-      {/* Nuevo Hero: título gigante sobre fondo naranja + imagen del iPhone */}
+      {/* Hero: dark + resplandor de acento, un solo banner (CLAUDE.md §6/§9 decisión #45) */}
       <section className="mt-6">
-        <div className="rounded-2xl overflow-hidden">
-          <div className="hero-top bg-hero-orange flex items-center justify-center py-12 px-4">
-            <h1 className="hero-title text-center">ENCONTRÁ EL QUE VA CON VOS</h1>
-          </div>
+        <div className="hero-shell reveal rounded-2xl p-5 md:p-10">
+          <div className="flex flex-col items-center gap-6 md:flex-row md:items-center">
+            <div className="reveal reveal-2 flex-1 text-center md:text-left">
+              <span className="hero-kicker">{brand.tagline}</span>
+              <h1 className="hero-title mt-3">Encontrá el que va con vos</h1>
+              <p className="mt-4 max-w-sm text-sm text-muted">
+                Precio en pesos actualizado al blue de hoy, stock real y color y
+                capacidad elegidos antes de escribir.
+              </p>
+              <Link
+                href="/productos"
+                className="hero-cta tap mt-6 inline-flex h-12 items-center justify-center rounded-lg px-6 text-sm font-semibold"
+              >
+                Ver catálogo
+              </Link>
+            </div>
 
-          <div className="hero-card bg-white p-6 md:p-10 flex flex-col md:flex-row items-start gap-6">
-            <div className="md:flex-2 flex-1 flex items-center justify-center">
+            <div className="reveal reveal-3 flex flex-1 items-center justify-center">
               <Image
                 src="/productos/iphone-17-pro-max-1.webp"
                 alt="iPhone 17 Pro Max (naranja) - vista trasera"
                 width={560}
                 height={420}
-                className="hero-image object-contain floating"
+                className="hero-image object-contain"
                 priority
               />
             </div>
 
-            <div className="md:flex-1 flex-1 text-center md:text-left">
-              <p className="mb-4 text-lg font-semibold text-hero-accent">Lo último en potencia y color.</p>
-              <p className="mb-6 text-sm text-muted">Fondo blanco con detalles naranjas y botón destacado para ver todo el catálogo.</p>
-              <Link href="/productos" className="hero-cta inline-flex items-center justify-center px-6 py-3 text-base font-semibold rounded-md">
-                Ver catálogo
-              </Link>
-            </div>
-
-            <aside className="w-full md:w-72">
+            <aside className="reveal reveal-4 w-full md:w-72">
               <AppleSidebar />
             </aside>
           </div>
@@ -68,7 +71,7 @@ export default async function HomePage() {
       {/* Categorías */}
       {categories.length > 0 && (
         <section className="mt-8">
-          <h2 className="font-display text-lg font-bold text-paper">Categorías</h2>
+          <h2 className="font-display text-lg font-extrabold tracking-tight text-paper">Categorías</h2>
           <ul className="mt-3 grid grid-cols-3 gap-3">
             {categories.map((c) => (
               <li key={c.id}>
@@ -91,7 +94,7 @@ export default async function HomePage() {
       {featured.length > 0 && (
         <section className="mt-8">
           <div className="flex items-baseline justify-between gap-3">
-            <h2 className="font-display text-lg font-bold text-paper">Destacados</h2>
+            <h2 className="font-display text-lg font-extrabold tracking-tight text-paper">Destacados</h2>
             <Link href="/productos" className="tap text-sm text-accent">
               Ver todo
             </Link>

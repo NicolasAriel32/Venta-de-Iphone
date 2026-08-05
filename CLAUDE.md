@@ -2,7 +2,7 @@
 
 > Plantilla de tienda online liviana para comercios de tecnología.
 > Producto de **Gestión Inteligente** (Nicolás). Instancia demo: **IPHONEX10**.
-> Versión del documento: `v1.7.0` · Última actualización: 2026-08-04
+> Versión del documento: `v1.8.0` · Última actualización: 2026-08-05
 
 ---
 
@@ -366,7 +366,7 @@ Ruta crítica: F2 → F3 → F4. Si el tiempo aprieta, F5 se reduce a **una sola
 | F0 Definición | 🟢 Terminada | 2026-08-03 | CLAUDE.md v1.3.0 + SPEC.md v1.0.0. Falta: crear cuenta de Netlify (bloquea F1) |
 | F1 Fundaciones | 🟡 En curso | 2026-08-03 | Código escrito: chasis, tokens, PWA, `netlify.toml`. **Falta verificar:** `npm install` + build + prueba en teléfono real. Sigue faltando la cuenta de Netlify |
 | F2 Datos | 🟢 Terminada | 2026-08-04 | Proyecto `iphonex10` en sa-east-1. 7 tablas + vista + RLS + bucket. Seed: 12 categorías, 42 productos, 88 colores, 46 capacidades. Tipos y `pricing.ts` con casos verificados |
-| F3 Catálogo | 🟡 En curso | 2026-08-04 | Home, listado con filtros, detalle con variantes, SEO e ISR. Precio en pesos con cotización automática del blue (`lib/exchange.ts`). Fotos reales cargadas: 9 imágenes en `public/productos/` repartidas entre los 6 iPhones, más el banner propio del hero. **Falta:** prueba en teléfono real, revisar que cada foto esté en el modelo correcto, y fotos para las otras 11 categorías |
+| F3 Catálogo | 🟡 En curso | 2026-08-05 | Home, listado con filtros, detalle con variantes, SEO e ISR. Precio en pesos con cotización automática del blue (`lib/exchange.ts`). Fotos reales cargadas: 9 imágenes en `public/productos/` repartidas entre los 6 iPhones, más el banner propio del hero. Sistema visual unificado (decisión #45): sacado el tema naranja/blanco que solo vivía en el hero y el detalle, tipografía nueva. **Falta:** prueba en teléfono real (incluye el rediseño visual, sin verificar todavía), revisar que cada foto esté en el modelo correcto, y fotos para las otras 11 categorías |
 | F4 Carrito | ⚪ Pendiente | — | |
 | F5 Admin | ⚪ Pendiente | — | |
 | F6 Pulido | ⚪ Pendiente | — | |
@@ -425,6 +425,7 @@ Leyenda: ⚪ pendiente · 🟡 en curso · 🟢 terminada · 🔴 bloqueada
 | 42 | Las fotos se normalizan sobre un fondo generado, no se recortan | Son fotos de local, con encuadres y fondos distintos. Cuadrarlas a 1200×1200 sobre el degradado de los tokens deja la grilla pareja sin cortarle el sujeto a ninguna. Todas quedan ≤150 KB en WebP, dentro del presupuesto de §6 | 2026-08-04 |
 | 43 | El hero usa un banner propio generado, no una foto de producto | Una foto de local arriba de todo compite con la grilla de destacados y pesa. El banner es un degradado con el acento y una silueta insinuada: 11 KB y el copy se lee sobre el sector oscuro. `store_config.banner_path` lo pisa cuando el cliente sube el suyo | 2026-08-04 |
 | 44 | El OG de la ficha publica la primera foto, en URL absoluta | El canal del rubro es WhatsApp: un link pegado en un chat sin imagen se ve como spam. Las rutas relativas no las resuelve ni WhatsApp ni Google, por eso `absoluteImageUrl()` antepone `brand.url` | 2026-08-04 |
+| 45 | Sistema visual único "Ink & Signal": ink/surface + resplandor de acento en toda la app, tipografía Bricolage Grotesque (display) + IBM Plex Sans (body) | El hero de home y el detalle de producto habían quedado con un tema naranja/blanco suelto (más las clases muertas `bg-hero-orange`, `shadow-accent`, `category-nav-badge`) que rompía la cohesión apenas se navegaba una pantalla más allá de la home, y usaban Inter — prohibido por la guía de tipografía del proyecto. Se unificó todo al ink/surface/accent de §3, se sacó el CTA parpadeante y la imagen flotando en loop (reemplazados por un único revelado escalonado de entrada), y la ficha de precio pasó a tener un anillo de degradé de acento (CSS puro, sin dependencias) como corresponde al elemento firma | 2026-08-05 |
 
 ---
 

@@ -75,7 +75,7 @@ export default async function ProductoPage({ params }: Props) {
 
   return (
     <article className="pb-20">
-      <div className="product-page-hero theme-orange rounded-2xl p-4 mb-6">
+      <div className="detail-hero reveal rounded-2xl p-4 mb-6">
         <nav className="mt-3 flex items-center gap-1 text-sm">
         <Link
           href={`/productos?cat=${product.category_slug}`}
@@ -89,12 +89,12 @@ export default async function ProductoPage({ params }: Props) {
         <p className="text-[11px] tracking-wider text-muted uppercase mt-3">
           {product.brand} · SKU {product.sku}
         </p>
-        <h1 className="mt-1 font-display text-2xl leading-tight font-bold text-white">
+        <h1 className="mt-1 font-display text-2xl leading-tight font-extrabold tracking-tight text-paper">
           {product.name}
         </h1>
       </div>
 
-      <div className="product-card-white rounded-2xl bg-white p-5">
+      <div className="reveal reveal-2 rounded-2xl border border-line bg-surface p-5">
         <ProductVariants
           product={product}
           usdRate={usdRate}
@@ -105,14 +105,14 @@ export default async function ProductoPage({ params }: Props) {
 
       {product.description && (
         <section className="mt-8">
-          <h2 className="font-display text-lg font-bold text-paper">Descripción</h2>
+          <h2 className="font-display text-lg font-extrabold tracking-tight text-paper">Descripción</h2>
           <p className="mt-2 product-description">{product.description}</p>
         </section>
       )}
 
       {specs.length > 0 && (
         <section className="mt-8">
-          <h2 className="font-display text-lg font-bold text-paper">Especificaciones</h2>
+          <h2 className="font-display text-lg font-extrabold tracking-tight text-paper">Especificaciones</h2>
           <dl className="mt-3 divide-y divide-line rounded-xl border border-line">
             {specs.map(([k, v]) => (
               <div key={k} className="flex gap-4 px-4 py-3 text-sm">
@@ -127,7 +127,7 @@ export default async function ProductoPage({ params }: Props) {
       <section className="mt-8 rounded-2xl border border-line bg-surface p-5">
         <div className="flex flex-col sm:flex-row gap-4">
           <div className="flex items-start gap-3">
-            <WarrantyIcon className="text-emerald-400" />
+            <WarrantyIcon className="text-ok" />
             <div>
               <div className="text-sm text-paper font-medium">Garantía</div>
               <div className="text-xs text-muted">6 meses de garantía</div>
