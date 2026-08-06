@@ -75,7 +75,7 @@ export default async function ProductoPage({ params }: Props) {
   const specs = Object.entries(product.specs ?? {});
 
   return (
-    <article className="pb-20">
+    <article className="page-wrap pb-20">
       {/* Registra QUÉ producto se miró. La visita en sí ya la cuenta el
           <Track /> del layout: son dos métricas distintas del panel. */}
       <Track productId={product.id} />

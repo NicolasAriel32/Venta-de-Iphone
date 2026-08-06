@@ -81,7 +81,7 @@ export default async function ProductosPage({
     : (currentCategory?.name ?? "Catálogo");
 
   return (
-    <>
+    <div className="page-wrap">
       <div className="mt-5 flex items-start justify-between gap-3">
         <div className="min-w-0">
           <h1 className="font-display text-2xl leading-tight font-bold text-paper">
@@ -114,7 +114,7 @@ export default async function ProductosPage({
           <Pagination page={result.page} totalPages={result.totalPages} searchParams={sp} />
         </>
       )}
-    </>
+    </div>
   );
 }
 

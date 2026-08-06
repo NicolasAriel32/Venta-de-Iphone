@@ -34,7 +34,11 @@ export default async function ShopLayout({
       <Track />
       <Header storeName={config?.store_name} />
       <CategoryNav categories={categories} />
-      <main id="contenido" className="mx-auto max-w-5xl px-4 pb-24">
+      {/* `main` NO acota el ancho: la home necesita franjas a sangre completa
+          (marcas, promesas) y un contenedor de 1320 px. El resto de las
+          pantallas se acota a sí mismo con `page-wrap`, que son exactamente
+          las clases que estaban acá. */}
+      <main id="contenido" className="pb-24">
         {children}
       </main>
       <Footer
