@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>IPHONEX10 · El precio que leés es el que pagás</title>
+<meta name="description" content="Celulares, notebooks y consolas con precio del día, stock verificado y entrega coordinada por WhatsApp.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,200..800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#070A0E;
+  --ink2:#0B1017;
+  --panel:#111823;
+  --panel2:#0E141D;
+  --line:#1C2634;
+  --line2:#2A3644;
+  --bone:#E6E2D7;
+  --dim:#828E9C;
+  --amber:#F2B23C;
+  --amber-hi:#FFD98A;
+  --ok:#5FD08A;
+  --display:"Bricolage Grotesque","Arial Narrow",sans-serif;
+  --body:"IBM Plex Sans",system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,monospace;
+  --pad:clamp(20px,5vw,64px);
+  --maxw:1320px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;background:var(--ink);color:var(--bone);
+  font-family:var(--body);font-weight:300;line-height:1.55;
+  -webkit-font-smoothing:antialiased;overflow-x:hidden;
+}
+body::before{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:
+    radial-gradient(900px 520px at 82% -8%, rgba(242,178,60,.10), transparent 62%),
+    radial-gradient(700px 600px at 4% 34%, rgba(60,110,242,.06), transparent 60%);
+}
+a{color:inherit;text-decoration:none}
+img{max-width:100%}
+:focus-visible{outline:2px solid var(--amber);outline-offset:3px;border-radius:2px}
+.wrap{width:100%;max-width:var(--maxw);margin:0 auto;padding-inline:var(--pad)}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+
+/* ---------- eyebrow / labels ---------- */
+.eyebrow{
+  font-family:var(--mono);font-size:11px;letter-spacing:.22em;text-transform:uppercase;
+  color:var(--dim);display:flex;align-items:center;gap:10px;
+}
+.eyebrow b{color:var(--amber);font-weight:500}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 0 rgba(95,208,138,.5);animation:pulse 2.6s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(95,208,138,.45)}70%{box-shadow:0 0 0 8px rgba(95,208,138,0)}100%{box-shadow:0 0 0 0 rgba(95,208,138,0)}}
+
+/* ---------- topbar ---------- */
+.topbar{position:sticky;top:0;z-index:60;backdrop-filter:blur(14px);
+  background:linear-gradient(180deg,rgba(7,10,14,.94),rgba(7,10,14,.72));
+  border-bottom:1px solid var(--line)}
+.topbar .row{display:flex;align-items:center;gap:22px;height:62px}
+.brand{font-family:var(--display);font-weight:800;font-stretch:80%;letter-spacing:-.02em;font-size:19px}
+.brand span{color:var(--amber)}
+.rate-chip{display:flex;align-items:center;gap:9px;font-family:var(--mono);font-size:12px;
+  padding:6px 11px;border:1px solid var(--line2);border-radius:100px;color:var(--dim);white-space:nowrap}
+.rate-chip .v{color:var(--amber);font-weight:600}
+.topnav{display:flex;gap:20px;margin-left:auto;font-size:13.5px;color:var(--dim)}
+.topnav a{position:relative;padding-block:4px}
+.topnav a::after{content:"";position:absolute;left:0;right:100%;bottom:0;height:1px;background:var(--amber);transition:right .35s cubic-bezier(.2,.8,.2,1)}
+.topnav a:hover{color:var(--bone)}
+.topnav a:hover::after{right:0}
+.cart{font-family:var(--mono);font-size:12px;border:1px solid var(--line2);padding:7px 13px;border-radius:100px;transition:.25s}
+.cart:hover{border-color:var(--amber);color:var(--amber)}
+
+/* ---------- hero ---------- */
+.hero{position:relative;z-index:1;padding-top:clamp(48px,8vw,96px);padding-bottom:clamp(40px,6vw,80px)}
+.hero .grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:clamp(28px,5vw,64px);align-items:center}
+h1{
+  font-family:var(--display);font-weight:800;font-stretch:80%;
+  font-size:clamp(42px,7.2vw,88px);line-height:.92;letter-spacing:-.035em;margin:20px 0 0;
+  text-wrap:balance;
+}
+h1 em{font-style:normal;font-weight:200;font-stretch:100%;color:var(--amber);display:block}
+.lede{color:#B9C0C9;font-size:clamp(15px,1.5vw,17.5px);max-width:46ch;margin:22px 0 30px}
+.cta-row{display:flex;flex-wrap:wrap;gap:12px}
+.btn{display:inline-flex;align-items:center;gap:10px;padding:14px 22px;border-radius:100px;
+  font-family:var(--mono);font-size:13px;letter-spacing:.04em;border:1px solid transparent;transition:.28s cubic-bezier(.2,.8,.2,1)}
+.btn-primary{background:var(--amber);color:#150E00;font-weight:600}
+.btn-primary:hover{background:var(--amber-hi);transform:translateY(-2px);box-shadow:0 12px 30px -12px rgba(242,178,60,.7)}
+.btn-ghost{border-color:var(--line2);color:var(--bone)}
+.btn-ghost:hover{border-color:var(--amber);color:var(--amber);transform:translateY(-2px)}
+.microstats{display:flex;gap:26px;margin-top:34px;flex-wrap:wrap}
+.microstats div{border-left:1px solid var(--line2);padding-left:13px}
+.microstats .n{font-family:var(--mono);font-size:19px;color:var(--bone);font-weight:500}
+.microstats .l{font-size:11.5px;color:var(--dim);letter-spacing:.06em;text-transform:uppercase;font-family:var(--mono)}
+
+/* ---------- pizarra (signature) ---------- */
+.board{
+  position:relative;border:1px solid var(--line2);border-radius:14px;overflow:hidden;
+  background:linear-gradient(180deg,#0D131B,#080C11);
+  box-shadow:0 40px 90px -50px rgba(0,0,0,.95), inset 0 1px 0 rgba(255,255,255,.04);
+}
+.board::after{content:"";position:absolute;inset:0;pointer-events:none;
+  background:repeating-linear-gradient(180deg,rgba(255,255,255,.028) 0 1px,transparent 1px 3px)}
+.board-head{display:flex;justify-content:space-between;align-items:center;gap:12px;
+  padding:13px 16px;border-bottom:1px solid var(--line);font-family:var(--mono);font-size:11px;
+  letter-spacing:.2em;text-transform:uppercase;color:var(--dim)}
+.board-head .t{color:var(--amber);letter-spacing:.2em}
+.board-cols,.brow{display:grid;grid-template-columns:1fr 78px 132px 96px;gap:12px;align-items:center}
+.board-cols{padding:11px 16px 7px;font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;color:#5C6672;text-transform:uppercase}
+.board-body{padding:0 16px 14px}
+.brow{padding:9px 0;border-top:1px solid rgba(255,255,255,.045)}
+.brow:first-child{border-top:0}
+.cells{font-family:var(--mono);font-size:13px;white-space:nowrap;letter-spacing:.02em}
+.cells.num{text-align:right;font-weight:500}
+.col-ars .cells{color:var(--amber)}
+.col-st .cells{font-size:10.5px;color:var(--ok);letter-spacing:.1em}
+.cell{display:inline-block;transform-origin:center center;backface-visibility:hidden}
+.cell.flip{animation:flap .3s ease-in}
+@keyframes flap{0%{transform:rotateX(0);opacity:1}48%{transform:rotateX(-90deg);opacity:.35}52%{transform:rotateX(90deg);opacity:.35}100%{transform:rotateX(0);opacity:1}}
+.board-foot{display:flex;justify-content:space-between;align-items:center;gap:10px;
+  padding:11px 16px;border-top:1px solid var(--line);background:rgba(255,255,255,.015);
+  font-family:var(--mono);font-size:10.5px;color:#5C6672;letter-spacing:.12em;text-transform:uppercase}
+
+/* ---------- marquee marcas ---------- */
+.strip{border-block:1px solid var(--line);padding:20px 0;position:relative;z-index:1;overflow:hidden;
+  -webkit-mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent);
+  mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent)}
+.track{display:flex;gap:56px;width:max-content;animation:slide 34s linear infinite}
+.strip:hover .track{animation-play-state:paused}
+@keyframes slide{to{transform:translateX(-50%)}}
+.track span{font-family:var(--display);font-weight:600;font-stretch:80%;font-size:23px;color:#39424E;
+  letter-spacing:-.01em;transition:color .3s;white-space:nowrap}
+.track span:hover{color:var(--amber)}
+
+/* ---------- secciones ---------- */
+section{position:relative;z-index:1}
+.sec{padding-block:clamp(56px,8vw,110px)}
+.sec-head{display:flex;justify-content:space-between;align-items:end;gap:20px;margin-bottom:34px;flex-wrap:wrap}
+h2{font-family:var(--display);font-weight:800;font-stretch:80%;letter-spacing:-.03em;
+  font-size:clamp(28px,4.4vw,52px);line-height:1;margin:10px 0 0}
+.link-more{font-family:var(--mono);font-size:12px;color:var(--dim);border-bottom:1px solid var(--line2);padding-bottom:3px;transition:.25s}
+.link-more:hover{color:var(--amber);border-color:var(--amber)}
+
+/* ---------- bento ---------- */
+.bento{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.tile{border:1px solid var(--line);border-radius:14px;padding:22px;background:var(--panel2);
+  position:relative;overflow:hidden;transition:border-color .35s,transform .35s cubic-bezier(.2,.8,.2,1)}
+.tile:hover{border-color:var(--line2);transform:translateY(-3px)}
+.tile h3{font-family:var(--display);font-weight:500;font-size:19px;margin:0 0 6px;letter-spacing:-.01em}
+.tile p{margin:0;font-size:13.5px;color:var(--dim);line-height:1.5}
+.t-wide{grid-column:span 2}
+.t-tall{grid-row:span 2}
+.t-rate{grid-column:span 2;grid-row:span 2;display:flex;flex-direction:column;justify-content:space-between;
+  background:linear-gradient(155deg,#141A22,#0A0E14)}
+.rate-big{font-family:var(--mono);font-weight:600;font-size:clamp(40px,6.5vw,68px);color:var(--amber);
+  line-height:1;letter-spacing:-.03em;margin:16px 0 4px}
+.spark{display:flex;align-items:flex-end;gap:4px;height:56px;margin-top:16px}
+.spark i{flex:1;background:linear-gradient(180deg,var(--amber),rgba(242,178,60,.12));border-radius:2px;opacity:.75;
+  transition:height .6s cubic-bezier(.2,.8,.2,1)}
+.cats{display:flex;flex-wrap:wrap;gap:7px;margin-top:14px}
+.cats a{font-family:var(--mono);font-size:11.5px;padding:6px 11px;border:1px solid var(--line2);
+  border-radius:100px;color:var(--dim);transition:.25s}
+.cats a:hover{color:var(--amber);border-color:var(--amber);transform:translateY(-2px)}
+.wa{background:linear-gradient(155deg,rgba(242,178,60,.14),transparent 70%);border-color:rgba(242,178,60,.32)}
+.wa h3{color:var(--amber)}
+
+/* ---------- productos ---------- */
+.prods{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.card{border:1px solid var(--line);border-radius:14px;background:var(--panel2);padding:20px;
+  transform-style:preserve-3d;transition:border-color .35s,box-shadow .35s;will-change:transform;position:relative;overflow:hidden}
+.card::before{content:"";position:absolute;inset:0;opacity:0;transition:opacity .35s;pointer-events:none;
+  background:radial-gradient(420px 220px at var(--mx,50%) var(--my,0%),rgba(242,178,60,.13),transparent 65%)}
+.card:hover{border-color:var(--line2);box-shadow:0 30px 60px -40px rgba(0,0,0,.9)}
+.card:hover::before{opacity:1}
+.card .glyph{height:104px;display:grid;place-items:center;border-bottom:1px solid var(--line);margin-bottom:16px}
+.card svg{width:56px;height:56px;stroke:var(--amber);fill:none;stroke-width:1.1;opacity:.9;transition:transform .5s cubic-bezier(.2,.8,.2,1)}
+.card:hover svg{transform:translateY(-4px) scale(1.06)}
+.card .mk{font-family:var(--mono);font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:#5C6672}
+.card .nm{font-family:var(--display);font-weight:500;font-size:19px;letter-spacing:-.01em;margin:5px 0 14px}
+.price{font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:22px;font-weight:600;color:var(--bone)}
+.price s{font-size:13px;color:#5C6672;font-weight:400;margin-left:8px}
+.transf{font-family:var(--mono);font-size:12px;color:var(--amber);margin-top:4px}
+.card .foot{display:flex;justify-content:space-between;align-items:center;margin-top:16px;
+  padding-top:13px;border-top:1px solid var(--line);font-family:var(--mono);font-size:11px;color:var(--dim)}
+.stock{display:inline-flex;align-items:center;gap:6px}
+.stock i{width:5px;height:5px;border-radius:50%;background:var(--ok)}
+
+/* ---------- pasos ---------- */
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border-top:1px solid var(--line)}
+.step{padding:32px 26px 32px 0;border-right:1px solid var(--line);position:relative}
+.step:last-child{border-right:0}
+.step .n{font-family:var(--mono);font-size:11px;color:var(--amber);letter-spacing:.2em}
+.step h3{font-family:var(--display);font-weight:500;font-size:clamp(20px,2.4vw,27px);letter-spacing:-.02em;margin:12px 0 8px}
+.step p{margin:0;color:var(--dim);font-size:14px;max-width:34ch}
+.step::after{content:"";position:absolute;top:-1px;left:0;width:0;height:1px;background:var(--amber);transition:width .7s cubic-bezier(.2,.8,.2,1)}
+.step.in::after{width:100%}
+
+/* ---------- full-bleed promesas ---------- */
+.promise{border-top:1px solid var(--line);background:linear-gradient(180deg,#0A0E14,#070A0E)}
+.promise .wrap{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(20px,4vw,56px);padding-block:clamp(48px,7vw,88px)}
+.promise .p{border-left:1px solid var(--line2);padding-left:18px}
+.promise .p b{font-family:var(--display);font-weight:200;font-size:clamp(34px,5vw,58px);color:var(--amber);
+  display:block;line-height:1;letter-spacing:-.03em}
+.promise .p span{display:block;margin-top:10px;color:var(--dim);font-size:14px}
+
+/* ---------- footer ---------- */
+footer{border-top:1px solid var(--line);padding-block:44px 32px;position:relative;z-index:1}
+.fgrid{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:36px}
+.fgrid h4{font-family:var(--mono);font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:#5C6672;margin:0 0 14px;font-weight:500}
+.fgrid a,.fgrid p{display:block;color:var(--dim);font-size:13.5px;margin:0 0 8px;transition:color .25s}
+.fgrid a:hover{color:var(--amber)}
+.legal{margin-top:36px;padding-top:18px;border-top:1px solid var(--line);
+  font-family:var(--mono);font-size:11px;color:#4C5561;display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.fab{position:fixed;right:20px;bottom:20px;z-index:80;display:inline-flex;align-items:center;gap:9px;
+  background:var(--amber);color:#150E00;font-family:var(--mono);font-size:13px;font-weight:600;
+  padding:14px 20px;border-radius:100px;box-shadow:0 18px 40px -18px rgba(242,178,60,.8);transition:.3s cubic-bezier(.2,.8,.2,1)}
+.fab:hover{transform:translateY(-3px) scale(1.03);background:var(--amber-hi)}
+
+/* ---------- reveal ---------- */
+[data-reveal]{opacity:0;transform:translateY(26px);transition:opacity .8s cubic-bezier(.2,.8,.2,1),transform .8s cubic-bezier(.2,.8,.2,1);transition-delay:var(--d,0ms)}
+[data-reveal].in{opacity:1;transform:none}
+.load>*{opacity:0;animation:rise .9s cubic-bezier(.2,.8,.2,1) forwards}
+.load>*:nth-child(1){animation-delay:.05s}
+.load>*:nth-child(2){animation-delay:.14s}
+.load>*:nth-child(3){animation-delay:.23s}
+.load>*:nth-child(4){animation-delay:.32s}
+.load>*:nth-child(5){animation-delay:.41s}
+@keyframes rise{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+
+/* ---------- responsive ---------- */
+@media(max-width:1040px){
+  .hero .grid{grid-template-columns:1fr}
+  .bento{grid-template-columns:repeat(2,1fr)}
+  .t-rate{grid-column:span 2;grid-row:span 1}
+  .prods{grid-template-columns:repeat(2,1fr)}
+  .topnav{display:none}
+}
+@media(max-width:720px){
+  .board-cols,.brow{grid-template-columns:1fr 118px}
+  .col-usd,.col-st{display:none}
+  .prods,.steps,.promise .wrap,.fgrid{grid-template-columns:1fr}
+  .step{border-right:0;border-bottom:1px solid var(--line);padding-right:0}
+  .step:last-child{border-bottom:0}
+  .rate-chip .lbl{display:none}
+  .microstats{gap:16px}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+  [data-reveal]{opacity:1;transform:none}
+  .load>*{opacity:1}
+}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="wrap row">
+    <a href="#" class="brand">IPHONE<span>X10</span></a>
+    <div class="rate-chip mono"><span class="lbl">BLUE</span> <span class="v" id="chipRate">$1.540</span> <span class="dot"></span></div>
+    <nav class="topnav">
+      <a href="#pizarra">Pizarra</a>
+      <a href="#catalogo">Catálogo</a>
+      <a href="#destacados">Destacados</a>
+      <a href="#comprar">Cómo comprar</a>
+    </nav>
+    <a href="#" class="cart">Carrito · 0</a>
+  </div>
+</header>
+
+<main>
+<!-- HERO -->
+<section class="hero" id="pizarra">
+  <div class="wrap grid">
+    <div class="load">
+      <div class="eyebrow"><span class="dot"></span> Lista viva · actualizada hace <b id="ago">4 s</b></div>
+      <h1>El precio que leés<em>es el que pagás.</em></h1>
+      <p class="lede">Pesos atados al blue del día, stock contado esta mañana, y el color y la capacidad ya elegidos antes de escribirnos. Sin “consultá disponibilidad”.</p>
+      <div class="cta-row">
+        <a href="#destacados" class="btn btn-primary">Ver catálogo →</a>
+        <a href="#comprar" class="btn btn-ghost">Cómo comprar</a>
+      </div>
+      <div class="microstats">
+        <div><div class="n mono">60 s</div><div class="l">Revalidación</div></div>
+        <div><div class="n mono">6 meses</div><div class="l">Garantía</div></div>
+        <div><div class="n mono">2 tarjetas</div><div class="l">Hasta en cuotas</div></div>
+      </div>
+    </div>
+
+    <div data-reveal style="--d:120ms">
+      <div class="board" id="board">
+        <div class="board-head">
+          <span class="t">Pizarra de precios</span>
+          <span>Ezeiza · <span id="clock" class="mono">--:--:--</span></span>
+        </div>
+        <div class="board-cols">
+          <span>Modelo</span>
+          <span class="col-usd" style="text-align:right">USD</span>
+          <span style="text-align:right">Contado $</span>
+          <span class="col-st" style="text-align:right">Estado</span>
+        </div>
+        <div class="board-body" id="boardBody"></div>
+        <div class="board-foot">
+          <span>Cotización usada: <span class="mono" id="footRate">1.540</span> ARS/USD</span>
+          <span>Reserva del precio: 24 h</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MARCAS -->
+<div class="strip" aria-label="Marcas que trabajamos">
+  <div class="track" id="track"></div>
+</div>
+
+<!-- BENTO -->
+<section class="sec" id="catalogo">
+  <div class="wrap">
+    <div class="sec-head" data-reveal>
+      <div>
+        <div class="eyebrow">Qué hay adentro</div>
+        <h2>Doce categorías,<br>un solo precio por producto.</h2>
+      </div>
+      <a href="#" class="link-more">Ver los 240 productos →</a>
+    </div>
+
+    <div class="bento">
+      <article class="tile t-rate" data-reveal style="--d:0ms">
+        <div>
+          <div class="eyebrow">Dólar blue · venta</div>
+          <div class="rate-big mono" id="bigRate">$1.540</div>
+          <p>Todos los precios en pesos salen de esta cotización. Cuando se mueve, la pizarra se da vuelta.</p>
+        </div>
+        <div class="spark" id="spark" aria-hidden="true"></div>
+      </article>
+
+      <article class="tile t-wide" data-reveal style="--d:80ms">
+        <h3>Elegí por categoría</h3>
+        <p>Cada ficha ya trae color, capacidad y precio de transferencia.</p>
+        <div class="cats">
+          <a href="#">iPhone</a><a href="#">Android</a><a href="#">Notebooks</a>
+          <a href="#">Tablets</a><a href="#">Smartwatches</a><a href="#">Auriculares</a>
+          <a href="#">Consolas</a><a href="#">Monitores</a><a href="#">Almacenamiento</a>
+          <a href="#">Cargadores</a><a href="#">Fundas</a><a href="#">Parlantes</a>
+        </div>
+      </article>
+
+      <article class="tile" data-reveal style="--d:160ms">
+        <h3>Comparar dos modelos</h3>
+        <p>Poné dos equipos lado a lado y mirá diferencia real en pesos, no en fichas técnicas.</p>
+      </article>
+
+      <article class="tile wa" data-reveal style="--d:240ms">
+        <h3>Escribinos y listo</h3>
+        <p>Mandás el modelo, te confirmamos stock y coordinamos entrega o envío el mismo día.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- DESTACADOS -->
+<section class="sec" id="destacados" style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-head" data-reveal>
+      <div>
+        <div class="eyebrow">Los que más salen</div>
+        <h2>Destacados de la semana</h2>
+      </div>
+      <a href="#" class="link-more">Ver todo →</a>
+    </div>
+    <div class="prods" id="prods"></div>
+  </div>
+</section>
+
+<!-- PASOS -->
+<section class="sec" id="comprar" style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-head" data-reveal>
+      <div>
+        <div class="eyebrow">Tres pasos, en orden</div>
+        <h2>Cómo comprar</h2>
+      </div>
+    </div>
+    <div class="steps">
+      <div class="step" data-reveal style="--d:0ms">
+        <div class="n mono">PASO 01</div>
+        <h3>Elegís el equipo</h3>
+        <p>Modelo, color y capacidad. El precio que ves ya incluye el descuento por transferencia.</p>
+      </div>
+      <div class="step" data-reveal style="--d:120ms">
+        <div class="n mono">PASO 02</div>
+        <h3>Congelás el precio 24 h</h3>
+        <p>Te reservamos la unidad y la cotización del día, aunque el blue se mueva al día siguiente.</p>
+      </div>
+      <div class="step" data-reveal style="--d:240ms">
+        <div class="n mono">PASO 03</div>
+        <h3>Pagás y coordinás</h3>
+        <p>Transferencia o hasta dos tarjetas en cuotas. Retiro en Ezeiza o envío a todo el país.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROMESAS -->
+<section class="promise">
+  <div class="wrap">
+    <div class="p" data-reveal style="--d:0ms"><b>6 meses</b><span>Garantía escrita sobre cada equipo, con número de serie registrado en la factura.</span></div>
+    <div class="p" data-reveal style="--d:120ms"><b>24 provincias</b><span>Envío con seguimiento a todo el país. Ezeiza y CABA salen el mismo día.</span></div>
+    <div class="p" data-reveal style="--d:240ms"><b>2 tarjetas</b><span>Dividís el pago en dos plásticos y sumás cuotas de ambos bancos.</span></div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="fgrid">
+      <div>
+        <a href="#" class="brand" style="font-size:22px">IPHONE<span>X10</span></a>
+        <p style="margin-top:12px;max-width:38ch">Tecnología con precio claro. Catálogo revalidado cada 60 segundos.</p>
+      </div>
+      <div>
+        <h4>Contacto</h4>
+        <a href="tel:+5491122463840">+54 9 11 2246 3840</a>
+        <a href="#">gestion.inteligente00@gmail.com</a>
+        <a href="#">Instagram</a>
+      </div>
+      <div>
+        <h4>Catálogo</h4>
+        <a href="#">iPhone</a><a href="#">Android</a><a href="#">Notebooks</a><a href="#">Consolas</a>
+      </div>
+    </div>
+    <div class="legal">
+      <span>© 2026 IPHONEX10</span>
+      <span>Imágenes ilustrativas · Precios sujetos a cotización</span>
+    </div>
+  </div>
+</footer>
+
+<a class="fab" href="https://wa.me/5491122463840" target="_blank" rel="noopener">Consultar por WhatsApp</a>
+
+<script>
+(function(){
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---------- datos reales del catálogo ---------- */
+  var items = [
+    {mk:'Apple',   nm:'iPhone 17 Pro',        usd:1199, st:'DISPONIBLE', icon:'phone'},
+    {mk:'Samsung', nm:'Galaxy S25 Ultra',     usd:1149, st:'DISPONIBLE', icon:'phone'},
+    {mk:'Apple',   nm:'MacBook Air 13" M4',   usd:1099, st:'DISPONIBLE', icon:'laptop'},
+    {mk:'Apple',   nm:'iPhone 17',            usd:899,  st:'DISPONIBLE', icon:'phone'},
+    {mk:'Sony',    nm:'PlayStation 5 Slim',   usd:549,  st:'ULTIMAS 3',  icon:'console'},
+    {mk:'Apple',   nm:'AirPods Pro 3',        usd:249,  st:'DISPONIBLE', icon:'buds'}
+  ];
+  var rate = 1540;
+
+  var fmt = function(n){ return n.toLocaleString('es-AR'); };
+  var ars = function(usd,r){ return Math.round(usd*r/1000)*1000; };
+
+  /* ---------- pizarra split-flap ---------- */
+  var body = document.getElementById('boardBody');
+  var W = {nm:18, usd:6, ars:11, st:10};
+
+  function pad(s,w,right){
+    s = String(s).toUpperCase();
+    if(s.length>w) s = s.slice(0,w);
+    var sp = new Array(w-s.length+1).join(' ');
+    return right ? sp+s : s+sp;
+  }
+  function setCells(el, str){
+    var chars = str.split('');
+    if(el.children.length !== chars.length){
+      el.innerHTML='';
+      chars.forEach(function(c){
+        var s=document.createElement('span'); s.className='cell';
+        s.textContent = c===' ' ? '\u00A0' : c; el.appendChild(s);
+      });
+      return;
+    }
+    chars.forEach(function(c,i){
+      var cell = el.children[i];
+      var next = c===' ' ? '\u00A0' : c;
+      if(cell.textContent === next) return;
+      if(reduce){ cell.textContent = next; return; }
+      setTimeout(function(){
+        cell.classList.add('flip');
+        setTimeout(function(){ cell.textContent = next; }, 145);
+        setTimeout(function(){ cell.classList.remove('flip'); }, 320);
+      }, i*22);
+    });
+  }
+
+  items.forEach(function(it){
+    var row = document.createElement('div'); row.className='brow';
+    row.innerHTML = '<span class="cells col-nm"></span>'+
+                    '<span class="cells num col-usd"></span>'+
+                    '<span class="cells num col-ars"></span>'+
+                    '<span class="cells num col-st"></span>';
+    body.appendChild(row);
+    it._row = row;
+  });
+
+  function paint(){
+    items.forEach(function(it){
+      setCells(it._row.querySelector('.col-nm'),  pad(it.nm, W.nm));
+      setCells(it._row.querySelector('.col-usd'), pad(it.usd, W.usd, true));
+      setCells(it._row.querySelector('.col-ars'), pad('$'+fmt(ars(it.usd,rate)), W.ars, true));
+      setCells(it._row.querySelector('.col-st'),  pad(it.st, W.st, true));
+    });
+    document.getElementById('chipRate').textContent = '$'+fmt(rate);
+    document.getElementById('bigRate').textContent  = '$'+fmt(rate);
+    document.getElementById('footRate').textContent = fmt(rate);
+  }
+  paint();
+
+  /* el blue se mueve -> la pizarra se da vuelta */
+  var hist = [];
+  for(var i=0;i<24;i++) hist.push(1500 + Math.round(Math.random()*70));
+  function drawSpark(){
+    var el = document.getElementById('spark');
+    var min = Math.min.apply(null,hist), max = Math.max.apply(null,hist);
+    el.innerHTML = hist.map(function(v){
+      var h = 12 + ((v-min)/(max-min||1))*44;
+      return '<i style="height:'+h+'px"></i>';
+    }).join('');
+  }
+  drawSpark();
+
+  var since = 4;
+  setInterval(function(){ since++; document.getElementById('ago').textContent = since+' s'; },1000);
+
+  if(!reduce){
+    setInterval(function(){
+      rate += (Math.random()<.5?-1:1)*(5+Math.round(Math.random()*15));
+      rate = Math.max(1480, Math.min(1610, rate));
+      hist.push(rate); hist.shift(); drawSpark();
+      since = 0;
+      paint();
+      renderPrices();
+    }, 6500);
+  }
+
+  /* reloj */
+  function clock(){
+    var d=new Date();
+    var p=function(n){return String(n).padStart(2,'0')};
+    document.getElementById('clock').textContent = p(d.getHours())+':'+p(d.getMinutes())+':'+p(d.getSeconds());
+  }
+  clock(); setInterval(clock,1000);
+
+  /* ---------- marcas ---------- */
+  var brands = ['Apple','Samsung','Sony','Xiaomi','Lenovo','JBL','Nintendo','Motorola','Anker','LG','ASUS','Bose'];
+  var track = document.getElementById('track');
+  track.innerHTML = brands.concat(brands).map(function(b){return '<span>'+b+'</span>'}).join('');
+
+  /* ---------- productos ---------- */
+  var icons = {
+    phone:'<rect x="7" y="2" width="10" height="20" rx="2.4"/><line x1="10.5" y1="5" x2="13.5" y2="5"/>',
+    laptop:'<rect x="3" y="5" width="18" height="11" rx="1.6"/><line x1="1.5" y1="19" x2="22.5" y2="19"/>',
+    console:'<rect x="2.5" y="8" width="19" height="9" rx="4"/><line x1="7" y1="11" x2="7" y2="14"/><line x1="5.5" y1="12.5" x2="8.5" y2="12.5"/><circle cx="16.5" cy="12.5" r="1"/>',
+    buds:'<path d="M8 3c-2.5 0-4 2-4 5s1.5 5 3 5 2-1.2 2-3V4.5z"/><path d="M16 3c2.5 0 4 2 4 5s-1.5 5-3 5-2-1.2-2-3V4.5z"/>'
+  };
+  var prods = document.getElementById('prods');
+  prods.innerHTML = items.map(function(it,i){
+    return '<article class="card" data-reveal style="--d:'+(i%3*90)+'ms" data-usd="'+it.usd+'">'+
+      '<div class="glyph"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">'+icons[it.icon]+'</svg></div>'+
+      '<div class="mk">'+it.mk+'</div>'+
+      '<div class="nm">'+it.nm+'</div>'+
+      '<div class="price js-ars"></div>'+
+      '<div class="transf js-tr"></div>'+
+      '<div class="foot"><span class="stock"><i></i>'+it.st+'</span><span>USD '+it.usd+'</span></div>'+
+    '</article>';
+  }).join('');
+
+  function renderPrices(){
+    Array.prototype.forEach.call(prods.querySelectorAll('.card'), function(c){
+      var usd = +c.dataset.usd, a = ars(usd,rate), t = Math.round(a*0.95/1000)*1000;
+      c.querySelector('.js-ars').innerHTML = '$ '+fmt(a);
+      c.querySelector('.js-tr').textContent = '$ '+fmt(t)+' por transferencia';
+    });
+  }
+  renderPrices();
+
+  /* tilt 3D */
+  if(!reduce && window.matchMedia('(hover:hover)').matches){
+    Array.prototype.forEach.call(document.querySelectorAll('.card'), function(c){
+      c.addEventListener('mousemove', function(e){
+        var r=c.getBoundingClientRect(), x=(e.clientX-r.left)/r.width, y=(e.clientY-r.top)/r.height;
+        c.style.setProperty('--mx',(x*100)+'%');
+        c.style.setProperty('--my',(y*100)+'%');
+        c.style.transform='perspective(900px) rotateY('+((x-.5)*7)+'deg) rotateX('+((.5-y)*7)+'deg) translateY(-4px)';
+      });
+      c.addEventListener('mouseleave', function(){ c.style.transform=''; });
+    });
+  }
+
+  /* ---------- scroll reveals ---------- */
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(en){
+      if(en.isIntersecting){ en.target.classList.add('in'); io.unobserve(en.target); }
+    });
+  },{threshold:.16, rootMargin:'0px 0px -8% 0px'});
+  document.querySelectorAll('[data-reveal], .step').forEach(function(el){ io.observe(el); });
+})();
+</script>
+</body>
+</html>
