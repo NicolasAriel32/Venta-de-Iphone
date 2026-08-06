@@ -33,7 +33,7 @@ function SaveButton({ dirty }: { dirty: boolean }) {
     <button
       type="submit"
       disabled={!dirty || pending}
-      className="h-12 w-full rounded-lg bg-accent text-sm font-semibold text-white transition-transform active:scale-[0.98] disabled:bg-line disabled:text-muted"
+      className="btn-amber w-full"
     >
       {pending ? "Guardando…" : dirty ? "Guardar" : "Sin cambios"}
     </button>
@@ -140,7 +140,7 @@ export default function ProductPriceCard({
 
       <div className="mb-2 flex items-start justify-between gap-2">
         <div className="min-w-0">
-          <p className="truncate font-display font-extrabold text-paper">
+          <p className="admin-prod-nm truncate">
             {product.name}
           </p>
           <p className="truncate text-[11px] text-muted">
@@ -148,7 +148,7 @@ export default function ProductPriceCard({
           </p>
         </div>
         {!product.is_active && (
-          <span className="shrink-0 rounded-full border border-warn/40 px-2 py-0.5 text-[10px] text-warn">
+          <span className="admin-flag mono">
             Pausado
           </span>
         )}

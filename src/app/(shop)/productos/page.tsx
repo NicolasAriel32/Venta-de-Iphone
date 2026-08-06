@@ -81,20 +81,21 @@ export default async function ProductosPage({
     : (currentCategory?.name ?? "Catálogo");
 
   return (
-    <div className="page-wrap">
-      <div className="mt-5 flex items-start justify-between gap-3">
+    <div className="page-wrap pt-7">
+      <div className="catalog-head">
         <div className="min-w-0">
-          <h1 className="font-display text-2xl leading-tight font-bold text-paper">
-            {heading}
-          </h1>
-          <p className="mt-1 text-sm text-muted">
+          <p className="eyebrow">{sp.q ? "Búsqueda" : "Catálogo"}</p>
+          <h1 className="catalog-title">{heading}</h1>
+          <p className="catalog-count mono">
             {result.total === 0
               ? "Sin resultados"
               : `${result.total} ${result.total === 1 ? "producto" : "productos"}`}
           </p>
         </div>
 
-        <Suspense fallback={<div className="h-11 w-24 rounded-lg border border-line" />}>
+        <Suspense
+          fallback={<div className="h-12 w-28 rounded-full border border-line" />}
+        >
           <FilterSheet categories={categories} brands={brands} activeCount={activeCount} />
         </Suspense>
       </div>
@@ -103,7 +104,7 @@ export default async function ProductosPage({
         <EmptyState query={sp.q} categories={categories} />
       ) : (
         <>
-          <ul className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+          <ul className="catalog-grid">
             {result.items.map((p, i) => (
               <li key={p.id}>
                 <ProductCard product={p} usdRate={usdRate} priority={i < 4} />
@@ -130,32 +131,27 @@ function EmptyState({
   categories: { id: string; name: string; slug: string }[];
 }) {
   return (
-    <div className="py-14 text-center">
-      <p className="font-display text-lg font-bold text-paper">
+    <div className="empty-state">
+      <h2 className="empty-title">
         {query
           ? `Sin resultados para «${query}»`
           : "No encontramos productos con esos filtros"}
-      </p>
-      <p className="mx-auto mt-2 max-w-[34ch] text-sm text-muted">
+      </h2>
+      <p className="empty-text">
         Probá con otra categoría, o escribinos por WhatsApp y lo buscamos por vos.
       </p>
 
-      <div className="mt-6 flex flex-wrap justify-center gap-2">
+      <ul className="cats justify-center">
         {categories.slice(0, 4).map((c) => (
-          <Link
-            key={c.id}
-            href={`/productos?cat=${c.slug}`}
-            className="tap flex h-11 items-center rounded-full border border-line px-4 text-sm text-paper"
-          >
-            {c.name}
-          </Link>
+          <li key={c.id}>
+            <Link href={`/productos?cat=${c.slug}`} className="cat-chip tap">
+              {c.name}
+            </Link>
+          </li>
         ))}
-      </div>
+      </ul>
 
-      <Link
-        href="/productos"
-        className="tap mt-6 inline-flex h-11 items-center rounded-lg bg-accent px-5 text-sm font-semibold text-white"
-      >
+      <Link href="/productos" className="btn-amber tap mt-7">
         Limpiar filtros
       </Link>
     </div>
@@ -184,27 +180,21 @@ function Pagination({
   };
 
   return (
-    <nav aria-label="Paginación" className="mt-8 flex items-center justify-between gap-3">
+    <nav aria-label="Paginación" className="pager">
       {page > 1 ? (
-        <Link
-          href={build(page - 1)}
-          className="tap flex h-11 items-center rounded-lg border border-line px-4 text-sm text-paper"
-        >
+        <Link href={build(page - 1)} className="btn-ghost tap">
           Anterior
         </Link>
       ) : (
         <span />
       )}
 
-      <span className="text-sm text-muted">
-        {page} de {totalPages}
+      <span className="pager-count mono">
+        {page} / {totalPages}
       </span>
 
       {page < totalPages ? (
-        <Link
-          href={build(page + 1)}
-          className="tap flex h-11 items-center rounded-lg border border-line px-4 text-sm text-paper"
-        >
+        <Link href={build(page + 1)} className="btn-ghost tap">
           Siguiente
         </Link>
       ) : (

@@ -86,11 +86,7 @@ export default function RateCard({
             {(["auto", "manual"] as const).map((value) => (
               <label
                 key={value}
-                className={`flex h-12 cursor-pointer items-center justify-center rounded-lg border text-sm font-semibold transition-colors ${
-                  selected === value
-                    ? "border-accent bg-accent/10 text-paper"
-                    : "border-line text-muted"
-                }`}
+                className={`chip flex-1 cursor-pointer justify-center ${selected === value ? "is-active" : ""}`}
               >
                 <input
                   type="radio"
@@ -120,7 +116,7 @@ export default function RateCard({
               value={draft}
               onChange={(e) => setDraft(e.target.value)}
               disabled={pending}
-              className="price-input h-12 w-full rounded-lg border border-line bg-ink px-3 text-paper outline-none focus:border-accent"
+              className="field price-input"
             />
             <SaveButton pending={pending} label={saveLabel} />
           </div>
@@ -141,11 +137,7 @@ export default function RateCard({
         {state.message && (
           <p
             role="status"
-            className={`mt-3 rounded-lg px-3 py-2 text-sm ${
-              state.ok
-                ? "border border-ok/40 bg-ok/10 text-ok"
-                : "border border-warn/40 bg-warn/10 text-warn"
-            }`}
+            className={`admin-status ${state.ok ? "is-ok" : "is-bad"}`}
           >
             {state.message}
           </p>
@@ -160,7 +152,7 @@ function SaveButton({ pending, label }: { pending: boolean; label: string }) {
     <button
       type="submit"
       disabled={pending}
-      className="h-12 shrink-0 rounded-lg bg-accent px-5 text-sm font-semibold text-white transition-transform active:scale-[0.98] disabled:opacity-60"
+      className="btn-amber shrink-0"
     >
       {pending ? "Guardando…" : label}
     </button>

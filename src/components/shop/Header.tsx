@@ -43,8 +43,8 @@ export default function Header({ storeName }: { storeName?: string }) {
   }
 
   return (
-    <header className="sticky top-0 z-50 border-b border-line bg-ink/95 backdrop-blur-sm">
-      <div className="mx-auto flex h-14 max-w-5xl items-center gap-2 px-4">
+    <header className="topbar">
+      <div className="topbar-row">
         {searchOpen ? (
           <form onSubmit={onSubmit} className="flex w-full items-center gap-2" role="search">
             <SearchIcon className="shrink-0 text-muted" />
@@ -69,10 +69,7 @@ export default function Header({ storeName }: { storeName?: string }) {
           </form>
         ) : (
           <>
-            <Link
-              href="/"
-              className="tap flex h-11 items-center pr-2 font-display text-xl font-bold tracking-tight text-paper"
-            >
+            <Link href="/" className="tap brand-lockup">
               {name}
             </Link>
 

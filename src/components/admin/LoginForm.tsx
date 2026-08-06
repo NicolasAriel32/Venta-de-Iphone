@@ -12,7 +12,7 @@ function SubmitButton() {
     <button
       type="submit"
       disabled={pending}
-      className="h-12 w-full rounded-lg bg-accent text-sm font-semibold text-white transition-transform active:scale-[0.98] disabled:opacity-60"
+      className="btn-amber w-full"
     >
       {pending ? "Entrando…" : "Entrar"}
     </button>
@@ -76,7 +76,7 @@ export default function LoginForm({ next }: { next: string }) {
           // `role="alert"` para que el lector de pantalla lo anuncie sin que
           // haya que ir a buscarlo.
           role="alert"
-          className="rounded-lg border border-warn/40 bg-warn/10 px-3 py-2 text-sm text-warn"
+          className="admin-status is-bad"
         >
           {state.message}
         </p>

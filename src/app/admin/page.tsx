@@ -55,7 +55,7 @@ export default async function AdminDashboard({
     <div className="space-y-6 pb-16">
       <header className="admin-reveal flex items-center justify-between gap-3">
         <div className="min-w-0">
-          <p className="truncate font-display text-lg font-extrabold tracking-tight text-paper uppercase">
+          <p className="brand-lockup truncate">
             {config?.store_name || brand.name}
           </p>
           <p className="text-xs text-muted">Panel</p>
@@ -64,7 +64,7 @@ export default async function AdminDashboard({
         <div className="flex shrink-0 items-center gap-2">
           <Link
             href="/"
-            className="tap flex h-11 items-center rounded-lg border border-line px-3 text-sm text-muted"
+            className="btn-ghost tap"
           >
             Ver tienda
           </Link>
@@ -72,7 +72,7 @@ export default async function AdminDashboard({
           <form action={signOut}>
             <button
               type="submit"
-              className="tap flex h-11 items-center rounded-lg border border-line px-3 text-sm text-muted"
+              className="btn-ghost tap"
             >
               Salir
             </button>
@@ -94,11 +94,7 @@ export default async function AdminDashboard({
               // dueño al tope si estaba mirando la lista de precios.
               scroll={false}
               aria-current={range === value ? "page" : undefined}
-              className={`tap flex h-11 flex-1 items-center justify-center rounded-lg border text-sm font-semibold ${
-                range === value
-                  ? "border-accent bg-accent/10 text-paper"
-                  : "border-line text-muted"
-              }`}
+              className={`chip tap flex-1 justify-center ${range === value ? "is-active" : ""}`}
             >
               {value === 1 ? "Hoy" : `${value} días`}
             </Link>
@@ -106,7 +102,7 @@ export default async function AdminDashboard({
         </div>
 
         {metrics === null ? (
-          <p className="rounded-2xl border border-warn/40 bg-warn/10 p-4 text-sm text-warn">
+          <p className="admin-alert">
             No pudimos leer las métricas. Recargá la página; si sigue igual,
             revisá que la base esté despierta.
           </p>
@@ -119,7 +115,7 @@ export default async function AdminDashboard({
             />
 
             {isEmpty && (
-              <p className="rounded-2xl border border-line bg-surface p-4 text-sm text-muted">
+              <p className="admin-note">
                 Todavía no entró nadie en este período. Compartí el link de la
                 tienda por Instagram o WhatsApp y los números aparecen solos.
               </p>
@@ -128,10 +124,8 @@ export default async function AdminDashboard({
             <VisitsChart series={metrics.series} />
 
             {metrics.top.length > 0 && (
-              <section className="rounded-2xl border border-line bg-surface p-4">
-                <h2 className="text-[11px] tracking-wider text-muted uppercase">
-                  Más mirados
-                </h2>
+              <section className="admin-card p-4">
+                <h2 className="metric-label">Más mirados</h2>
                 <ol className="mt-3 space-y-2">
                   {metrics.top.map((item) => (
                     <li key={item.id} className="flex items-baseline gap-3">
@@ -141,7 +135,7 @@ export default async function AdminDashboard({
                       >
                         {item.name}
                       </Link>
-                      <span className="usd-value shrink-0 text-xs text-muted">
+                      <span className="mono shrink-0 text-xs text-muted">
                         {item.views} {item.views === 1 ? "vista" : "vistas"}
                         {item.clicks > 0 && ` · ${item.clicks} wsp`}
                       </span>
@@ -172,19 +166,13 @@ export default async function AdminDashboard({
           vez con sticky en lugar de fixed. */}
       <section className="space-y-3">
         <div className="flex items-baseline justify-between gap-3">
-          <h2 className="font-display text-lg font-extrabold tracking-tight text-paper">
-            Precios
-          </h2>
+          <h2 className="admin-h2">Precios</h2>
           {/* Recordatorio permanente de la regla dura: se carga en dólares.
               Es lo primero que un dueño nuevo intenta hacer mal. */}
-          <span className="text-[11px] text-muted">
-            se cargan en USD · el peso se calcula solo
-          </span>
+          <span className="admin-hint mono">se cargan en USD · el peso se calcula solo</span>
         </div>
         {products.length === 0 ? (
-          <p className="rounded-2xl border border-line bg-surface p-4 text-sm text-muted">
-            No pudimos leer el catálogo. Recargá la página.
-          </p>
+          <p className="admin-note">No pudimos leer el catálogo. Recargá la página.</p>
         ) : (
           <PriceEditor products={products} usdRate={rate.value} />
         )}

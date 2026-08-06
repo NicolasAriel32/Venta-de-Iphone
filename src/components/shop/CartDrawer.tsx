@@ -88,7 +88,7 @@ export default function CartDrawer({
             aria-hidden
             className="absolute top-1.5 left-1/2 h-1 w-10 -translate-x-1/2 rounded-full bg-line"
           />
-          <h2 className="font-display text-lg font-extrabold tracking-tight text-paper">
+          <h2 className="sheet-title">
             Tu pedido
           </h2>
           <span className="text-sm text-muted">
@@ -112,7 +112,7 @@ export default function CartDrawer({
             <Link
               href="/productos"
               onClick={close}
-              className="tap mt-4 inline-flex h-11 items-center rounded-lg border border-line px-5 text-sm text-paper"
+              className="btn-ghost tap mt-4"
             >
               Ver catálogo
             </Link>
@@ -135,7 +135,7 @@ export default function CartDrawer({
                 <>
                   <div className="flex items-baseline justify-between">
                     <span className="text-sm text-muted">Total</span>
-                    <span className="price-figure font-display text-2xl leading-none font-extrabold text-paper">
+                    <span className="cart-total mono">
                       {formatArs(totals.totalArs)}
                     </span>
                   </div>
@@ -143,7 +143,7 @@ export default function CartDrawer({
                   {totals.hasDiscount && (
                     <div className="mt-1 flex items-baseline justify-between">
                       <span className="text-xs text-muted">Con transferencia</span>
-                      <span className="price-figure text-sm font-semibold text-ok">
+                      <span className="cart-total-transf mono text-sm">
                         {formatArs(totals.transferArs)}
                       </span>
                     </div>
@@ -159,14 +159,14 @@ export default function CartDrawer({
                 <button
                   type="button"
                   onClick={close}
-                  className="h-12 flex-1 rounded-lg border border-line text-sm font-medium text-paper"
+                  className="btn-ghost flex-1"
                 >
                   Seguir comprando
                 </button>
                 <Link
                   href="/carrito"
                   onClick={close}
-                  className="flex h-12 flex-1 items-center justify-center rounded-lg bg-accent text-sm font-semibold text-white"
+                  className="btn-amber flex-1"
                 >
                   Ir al carrito
                 </Link>

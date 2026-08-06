@@ -30,7 +30,7 @@ export default async function CarritoPage() {
   const { config, rate } = await getStoreContext();
 
   return (
-    <div className="page-wrap">
+    <div className="content-wrap">
       <CartClient
         usdRate={rate.value}
         paymentNote={config?.payment_note || brand.notes.payment}

@@ -17,8 +17,6 @@ export default function AdminLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <div className="admin-shell mx-auto min-h-dvh max-w-2xl px-4 py-6">
-      {children}
-    </div>
+    <div className="admin-shell content-wrap min-h-dvh py-6">{children}</div>
   );
 }

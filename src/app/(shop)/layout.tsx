@@ -35,9 +35,9 @@ export default async function ShopLayout({
       <Header storeName={config?.store_name} />
       <CategoryNav categories={categories} />
       {/* `main` NO acota el ancho: la home necesita franjas a sangre completa
-          (marcas, promesas) y un contenedor de 1320 px. El resto de las
-          pantallas se acota a sí mismo con `page-wrap`, que son exactamente
-          las clases que estaban acá. */}
+          (marcas, promesas). Cada pantalla se acota sola, con el MISMO ancho
+          y respiro que esta chrome: `page-wrap` (1320 px) para el listado,
+          `content-wrap` (736 px) para lo que se lee o se completa. */}
       <main id="contenido" className="pb-24">
         {children}
       </main>

@@ -184,7 +184,7 @@ export default function ProductVariants({
   return (
     <>
       {/* Galería — altura fija para que cambiar de color no mueva el layout */}
-      <div className="relative mt-4 aspect-square w-full overflow-hidden rounded-2xl border border-line bg-surface">
+      <div className="gallery">
         {currentSrc ? (
           <Image
             src={currentSrc}
@@ -195,23 +195,15 @@ export default function ProductVariants({
             className="object-contain"
           />
         ) : (
-          <div
-            role="img"
-            aria-label={product.name}
-            className="flex h-full w-full flex-col items-center justify-center gap-2 bg-linear-to-br from-line/60 to-surface p-6 text-center"
-          >
-            <span className="font-display text-xs tracking-[0.2em] text-muted uppercase">
-              {product.brand}
-            </span>
-            <span className="font-display text-xl leading-tight font-bold text-muted/80">
-              {product.name}
-            </span>
+          <div role="img" aria-label={product.name} className="gallery-fallback">
+            <span className="showcase-mk mono">{product.brand}</span>
+            <span className="gallery-fallback-nm">{product.name}</span>
           </div>
         )}
       </div>
 
       {gallery.length > 1 && (
-        <div className="mt-3 flex justify-center gap-2">
+        <div className="gallery-dots">
           {gallery.map((img, i) => (
             <button
               key={img.id}
@@ -219,13 +211,9 @@ export default function ProductVariants({
               onClick={() => setImageIndex(i)}
               aria-label={`Ver imagen ${i + 1} de ${gallery.length}`}
               aria-current={i === imageIndex}
-              className="tap flex h-11 w-11 items-center justify-center"
+              className="tap gallery-dot-hit"
             >
-              <span
-                className={`h-2 w-2 rounded-full transition-colors ${
-                  i === imageIndex ? "bg-accent" : "bg-line"
-                }`}
-              />
+              <span className={`gallery-dot ${i === imageIndex ? "is-on" : ""}`} />
             </button>
           ))}
         </div>
@@ -233,11 +221,11 @@ export default function ProductVariants({
 
       {/* Selector de COLOR — cambia la galería, no el precio */}
       {colors.length > 1 && (
-        <section className="mt-6">
-          <h2 className="text-sm text-muted">
-            Color: <span className="text-paper">{selectedColor?.name}</span>
+        <section className="variant-group">
+          <h2 className="variant-label">
+            Color <span className="variant-value">{selectedColor?.name}</span>
           </h2>
-          <div className="mt-2.5 flex flex-wrap gap-2">
+          <div className="variant-row">
             {colors.map((c) => {
               const active = c.slug === colorSlug;
               return (
@@ -248,13 +236,11 @@ export default function ProductVariants({
                   aria-pressed={active}
                   aria-label={c.name}
                   title={c.name}
-                  className={`flex h-11 w-11 items-center justify-center rounded-full border-2 transition-colors ${
-                    active ? "border-accent" : "border-line"
-                  }`}
+                  className={`swatch ${active ? "is-active" : ""}`}
                 >
                   <span
                     aria-hidden
-                    className="h-7 w-7 rounded-full ring-1 ring-black/20"
+                    className="swatch-fill"
                     style={{ backgroundColor: c.hex }}
                   />
                 </button>
@@ -266,9 +252,9 @@ export default function ProductVariants({
 
       {/* Selector de CAPACIDAD — cambia el precio y el stock, no la galería */}
       {capacities.length > 0 && (
-        <section className="mt-6">
-          <h2 className="text-sm text-muted">Capacidad</h2>
-          <div className="mt-2.5 flex flex-wrap gap-2">
+        <section className="variant-group">
+          <h2 className="variant-label">Capacidad</h2>
+          <div className="variant-row">
             {capacities.map((c) => {
               const active = c.id === capacityId;
               const unavailable = c.stock_status === "out_of_stock";
@@ -278,11 +264,9 @@ export default function ProductVariants({
                   type="button"
                   onClick={() => setPickedCapacity(c.id)}
                   aria-pressed={active}
-                  className={`flex h-11 items-center rounded-lg border px-4 text-sm transition-colors ${
-                    active
-                      ? "border-accent bg-accent/15 text-paper"
-                      : "border-line text-muted hover:text-paper"
-                  } ${unavailable ? "line-through opacity-50" : ""}`}
+                  className={`chip mono ${active ? "is-active" : ""} ${
+                    unavailable ? "is-out" : ""
+                  }`}
                 >
                   {formatCapacity(c.capacity_gb)}
                 </button>
@@ -310,7 +294,7 @@ export default function ProductVariants({
 
       {/* Barra fija de acción — zona del pulgar */}
       <div
-        className="product-action-bar fixed inset-x-0 bottom-0 z-30 border-t border-line bg-ink/95 backdrop-blur-sm"
+        className="product-action-bar fixed inset-x-0 bottom-0 z-30 border-t border-line"
         style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
       >
         <div className="mx-auto flex max-w-5xl items-center gap-2 px-4 py-3">
@@ -319,16 +303,12 @@ export default function ProductVariants({
               href={waHref}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex h-12 flex-1 items-center justify-center rounded-lg bg-accent text-sm font-semibold text-white"
+              className="btn-amber flex-1"
             >
               Consultar disponibilidad
             </a>
           ) : (
-            <button
-              type="button"
-              onClick={handleAdd}
-              className="h-12 flex-1 rounded-lg bg-accent text-sm font-semibold text-white transition-transform active:scale-[0.98]"
-            >
+            <button type="button" onClick={handleAdd} className="btn-amber flex-1">
               Agregar al carrito
             </button>
           )}
@@ -341,7 +321,7 @@ export default function ProductVariants({
             // Con el producto, para que el panel pueda decir cuál es el que
             // más consultas genera y no solo cuántas hubo.
             onClick={() => trackWhatsApp("detail", product.id)}
-            className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-[#25D366] text-white"
+            className="btn-wa"
           >
             <WhatsAppIcon />
           </a>

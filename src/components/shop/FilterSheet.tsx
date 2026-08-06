@@ -73,16 +73,10 @@ export default function FilterSheet({
 
   return (
     <>
-      <button
-        type="button"
-        onClick={() => setOpen(true)}
-        className="tap flex h-11 items-center gap-2 rounded-lg border border-line px-4 text-sm text-paper"
-      >
+      <button type="button" onClick={() => setOpen(true)} className="btn-ghost tap shrink-0">
         Filtros
         {activeCount > 0 && (
-          <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-accent px-1.5 text-xs font-semibold text-white">
-            {activeCount}
-          </span>
+          <span className="filter-badge mono">{activeCount}</span>
         )}
       </button>
 
@@ -99,10 +93,10 @@ export default function FilterSheet({
             role="dialog"
             aria-modal="true"
             aria-label="Filtros"
-            className="absolute inset-x-0 bottom-0 max-h-[85dvh] overflow-y-auto rounded-t-2xl border-t border-line bg-ink"
+            className="sheet"
           >
-            <div className="sticky top-0 flex items-center justify-between border-b border-line bg-ink px-4 py-3">
-              <h2 className="font-display text-lg font-bold text-paper">Filtros</h2>
+            <div className="sheet-head">
+              <h2 className="sheet-title">Filtros</h2>
               <button
                 type="button"
                 onClick={() => setOpen(false)}
@@ -161,20 +155,16 @@ export default function FilterSheet({
 
             {/* Acciones al fondo: zona del pulgar */}
             <div
-              className="sticky bottom-0 flex gap-2 border-t border-line bg-ink px-4 py-3"
+              className="sheet-foot"
               style={{ paddingBottom: "calc(0.75rem + env(safe-area-inset-bottom))" }}
             >
-              <button
-                type="button"
-                onClick={clearAll}
-                className="tap h-12 flex-1 rounded-lg border border-line text-sm text-paper"
-              >
+              <button type="button" onClick={clearAll} className="btn-ghost tap flex-1">
                 Limpiar
               </button>
               <button
                 type="button"
                 onClick={() => setOpen(false)}
-                className="tap h-12 flex-[2] rounded-lg bg-accent text-sm font-semibold text-white"
+                className="btn-amber tap flex-[2]"
               >
                 Ver resultados
               </button>
@@ -189,12 +179,13 @@ export default function FilterSheet({
 function Group({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div>
-      <h3 className="text-xs tracking-wider text-muted uppercase">{title}</h3>
-      <div className="mt-2.5 flex flex-wrap gap-2">{children}</div>
+      <h3 className="variant-label">{title}</h3>
+      <div className="variant-row">{children}</div>
     </div>
   );
 }
 
+/** Misma píldora que las capacidades del detalle y los chips de la home. */
 function Chip({
   active,
   onClick,
@@ -209,11 +200,7 @@ function Chip({
       type="button"
       onClick={onClick}
       aria-pressed={active}
-      className={`flex h-11 items-center rounded-full border px-4 text-sm transition-colors ${
-        active
-          ? "border-accent bg-accent/15 text-paper"
-          : "border-line text-muted hover:text-paper"
-      }`}
+      className={`chip ${active ? "is-active" : ""}`}
     >
       {children}
     </button>

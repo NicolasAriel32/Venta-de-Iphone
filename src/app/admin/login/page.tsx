@@ -25,7 +25,7 @@ export default async function LoginPage({
   return (
     <div className="flex min-h-[70dvh] flex-col justify-center">
       <div className="mb-8 text-center">
-        <p className="font-display text-2xl font-extrabold tracking-tight text-paper uppercase">
+        <p className="brand-lockup" style={{ fontSize: 24 }}>
           {brand.name}
         </p>
         <p className="mt-1 text-sm text-muted">Panel de administración</p>

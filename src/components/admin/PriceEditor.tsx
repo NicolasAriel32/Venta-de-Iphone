@@ -54,7 +54,7 @@ export default function PriceEditor({
       </div>
 
       {filtered.length === 0 ? (
-        <p className="rounded-2xl border border-line bg-surface p-6 text-center text-sm text-muted">
+        <p className="admin-note text-center">
           No hay ningún producto que coincida con “{query}”. Probá con el
           modelo o el SKU.
         </p>

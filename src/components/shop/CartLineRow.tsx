@@ -92,20 +92,17 @@ export default function CartLineRow({
         <div className="mt-2 flex items-end justify-between gap-2">
           {/* Áreas táctiles de 44 px: son los controles que más se tocan
               con una mano y en movimiento (CLAUDE.md §1). */}
-          <div className="flex items-center rounded-lg border border-line">
+          <div className="qty">
             <button
               type="button"
               onClick={() => decrement(item.key)}
               disabled={atMin}
               aria-label={`Quitar una unidad de ${item.name}`}
-              className="flex h-11 w-11 items-center justify-center rounded-l-lg text-lg text-paper disabled:text-muted/40"
+              className="qty-btn"
             >
               −
             </button>
-            <span
-              aria-live="polite"
-              className="qty-control w-8 text-center text-sm text-paper"
-            >
+            <span aria-live="polite" className="qty-n mono">
               {item.quantity}
             </span>
             <button
@@ -113,7 +110,7 @@ export default function CartLineRow({
               onClick={() => increment(item.key)}
               disabled={atMax}
               aria-label={`Agregar una unidad de ${item.name}`}
-              className="flex h-11 w-11 items-center justify-center rounded-r-lg text-lg text-paper disabled:text-muted/40"
+              className="qty-btn"
             >
               +
             </button>
@@ -122,17 +119,13 @@ export default function CartLineRow({
           <div className="text-right">
             {usdRate > 0 ? (
               <>
-                <p className="price-figure font-display leading-none font-bold text-paper">
-                  {formatArs(totals.subtotalArs)}
-                </p>
+                <p className="line-total mono">{formatArs(totals.subtotalArs)}</p>
                 {item.quantity > 1 && (
-                  <p className="mt-1 text-[11px] text-muted">
-                    {formatArs(totals.unitArs)} c/u
-                  </p>
+                  <p className="line-unit mono">{formatArs(totals.unitArs)} c/u</p>
                 )}
               </>
             ) : (
-              <p className="text-xs text-muted">Consultar precio</p>
+              <p className="line-unit">Consultar precio</p>
             )}
           </div>
         </div>

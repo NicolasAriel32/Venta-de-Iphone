@@ -12,7 +12,7 @@ export default function NotFound() {
       </p>
       <Link
         href="/"
-        className="tap mt-6 inline-flex h-11 items-center rounded-lg bg-accent px-5 text-sm font-semibold text-white"
+        className="tap mt-6 inline-flex h-11 items-center rounded-lg bg-accent px-5 text-sm font-semibold text-on-amber"
       >
         Ver catálogo
       </Link>

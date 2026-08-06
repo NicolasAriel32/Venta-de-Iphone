@@ -70,32 +70,36 @@ export default async function ProductoPage({ params }: Props) {
   if (!product) notFound();
 
   const usdRate = rate.value;
-  const paymentNote = config?.payment_note || brand.notes.payment;
   const whatsapp = config?.whatsapp_number || brand.whatsapp.number;
   const specs = Object.entries(product.specs ?? {});
 
+  // Los tres textos de confianza salen de la config, con el fallback de
+  // `brand.config.ts`. Antes la franja de esta ficha los tenía escritos a
+  // mano, así que editarlos desde el panel no cambiaba nada acá.
+  const notes = {
+    warranty: config?.warranty_note || brand.notes.warranty,
+    shipping: config?.shipping_note || brand.notes.shipping,
+    payment: config?.payment_note || brand.notes.payment,
+  };
+  const paymentNote = notes.payment;
+
   return (
-    <article className="page-wrap pb-20">
+    <article className="content-wrap pb-20">
       {/* Registra QUÉ producto se miró. La visita en sí ya la cuenta el
           <Track /> del layout: son dos métricas distintas del panel. */}
       <Track productId={product.id} />
-      <div className="detail-hero reveal rounded-2xl p-4 mb-6">
-        <nav className="mt-3 flex items-center gap-1 text-sm">
-        <Link
-          href={`/productos?cat=${product.category_slug}`}
-          className="tap flex h-11 items-center gap-1 text-muted hover:text-paper"
-        >
-          <ChevronLeftIcon className="h-4 w-4" />
-          {product.category_name}
-        </Link>
-      </nav>
+      <div className="detail-hero reveal">
+        <nav>
+          <Link href={`/productos?cat=${product.category_slug}`} className="detail-back tap">
+            <ChevronLeftIcon className="h-4 w-4" />
+            {product.category_name}
+          </Link>
+        </nav>
 
-        <p className="text-[11px] tracking-wider text-muted uppercase mt-3">
-          {product.brand} · SKU {product.sku}
+        <p className="eyebrow detail-sku">
+          {product.brand} <span className="mono">· SKU {product.sku}</span>
         </p>
-        <h1 className="mt-1 font-display text-2xl leading-tight font-extrabold tracking-tight text-paper">
-          {product.name}
-        </h1>
+        <h1 className="detail-title">{product.name}</h1>
       </div>
 
       {/*
@@ -112,7 +116,7 @@ export default async function ProductoPage({ params }: Props) {
 
         La entrada escalonada la sigue haciendo el encabezado de arriba.
       */}
-      <div className="rounded-2xl border border-line bg-surface p-5">
+      <div className="detail-panel">
         <ProductVariants
           product={product}
           usdRate={usdRate}
@@ -122,59 +126,58 @@ export default async function ProductoPage({ params }: Props) {
       </div>
 
       {product.description && (
-        <section className="mt-8">
-          <h2 className="font-display text-lg font-extrabold tracking-tight text-paper">Descripción</h2>
-          <p className="mt-2 product-description">{product.description}</p>
+        <section className="detail-sec">
+          <h2 className="detail-h2">Descripción</h2>
+          <p className="product-description">{product.description}</p>
         </section>
       )}
 
       {specs.length > 0 && (
-        <section className="mt-8">
-          <h2 className="font-display text-lg font-extrabold tracking-tight text-paper">Especificaciones</h2>
-          <dl className="mt-3 divide-y divide-line rounded-xl border border-line">
+        <section className="detail-sec">
+          <h2 className="detail-h2">Especificaciones</h2>
+          <dl className="specs">
             {specs.map(([k, v]) => (
-              <div key={k} className="flex gap-4 px-4 py-3 text-sm">
-                <dt className="w-2/5 shrink-0 text-muted">{k}</dt>
-                <dd className="text-paper">{String(v)}</dd>
+              <div key={k} className="spec-row">
+                <dt className="spec-k">{k}</dt>
+                <dd className="spec-v mono">{String(v)}</dd>
               </div>
             ))}
           </dl>
         </section>
       )}
 
-      <section className="mt-8 rounded-2xl border border-line bg-surface p-5">
-        <div className="flex flex-col sm:flex-row gap-4">
-          <div className="flex items-start gap-3">
+      <section className="detail-sec">
+        <ul className="trust">
+          <li>
             <WarrantyIcon className="text-ok" />
             <div>
-              <div className="text-sm text-paper font-medium">Garantía</div>
-              <div className="text-xs text-muted">6 meses de garantía</div>
+              <p className="trust-k">Garantía</p>
+              <p className="trust-v">{notes.warranty}</p>
             </div>
-          </div>
-
-          <div className="flex items-start gap-3">
-            <TruckIcon className="text-paper" />
+          </li>
+          <li>
+            <TruckIcon className="text-amber" />
             <div>
-              <div className="text-sm text-paper font-medium">Envíos</div>
-              <div className="text-xs text-muted">Envíos a todo el país</div>
+              <p className="trust-k">Envíos</p>
+              <p className="trust-v">{notes.shipping}</p>
             </div>
-          </div>
-
-          <div className="flex items-start gap-3">
-            <CardIcon className="text-paper" />
+          </li>
+          <li>
+            <CardIcon className="text-amber" />
             <div>
-              <div className="text-sm text-paper font-medium">Medios de pago</div>
-              <div className="text-xs text-muted">Crédito en cuotas y tarjetas</div>
+              <p className="trust-k">Medios de pago</p>
+              <p className="trust-v">{notes.payment}</p>
             </div>
-          </div>
-        </div>
+          </li>
+        </ul>
       </section>
 
       {/* Transparencia sobre de dónde sale el precio en pesos. */}
       {usdRate > 0 && (
-        <p className="mt-4">
-          <span className="usd-rate" aria-hidden>
-            {rateLabel(rate)} · 1 USD = <span className="usd-value">{new Intl.NumberFormat("es-AR").format(usdRate)}</span>
+        <p className="rate-note">
+          <span className="mono">{rateLabel(rate)}</span>
+          <span className="mono rate-note-v">
+            1 USD = {new Intl.NumberFormat("es-AR").format(usdRate)}
           </span>
         </p>
       )}

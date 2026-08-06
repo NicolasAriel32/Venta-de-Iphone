@@ -62,7 +62,15 @@ export const brand = {
    */
   notes: {
     payment: "Crédito en cuotas y hasta 2 tarjetas",
-    shipping: "Envíos a todo el país",
+    /**
+     * ⚠️ Tiene que decir lo MISMO que la franja de promesas de la home.
+     * Mientras acá decía "todo el país" y la home "Buenos Aires y GBA", el
+     * sitio se contradecía a sí mismo dos pantallas más abajo.
+     *
+     * Ojo: `store_config.shipping_note` pisa este valor en runtime, así que
+     * cambiarlo acá no alcanza — hay que cambiarlo también en la base.
+     */
+    shipping: "Entregas en Buenos Aires y GBA",
     warranty: "Garantía de 6 meses",
   },
 

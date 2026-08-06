@@ -118,7 +118,7 @@ export default function CartClient({
   if (items.length === 0) {
     return (
       <section className="py-16 text-center">
-        <h1 className="font-display text-2xl font-extrabold tracking-tight text-paper">
+        <h1 className="cart-title">
           Tu pedido está vacío
         </h1>
         <p className="mx-auto mt-3 max-w-[32ch] text-sm text-muted">
@@ -127,7 +127,7 @@ export default function CartClient({
         </p>
         <Link
           href="/productos"
-          className="tap mt-6 inline-flex h-12 items-center rounded-lg bg-accent px-6 text-sm font-semibold text-white"
+          className="btn-amber tap mt-6"
         >
           Ver catálogo
         </Link>
@@ -138,7 +138,7 @@ export default function CartClient({
   return (
     <div className="py-6">
       <div className="flex items-baseline justify-between gap-3">
-        <h1 className="font-display text-2xl font-extrabold tracking-tight text-paper">
+        <h1 className="cart-title">
           Tu pedido
         </h1>
         <button
@@ -162,7 +162,7 @@ export default function CartClient({
           <>
             <div className="flex items-baseline justify-between">
               <span className="text-sm text-muted">Total</span>
-              <span className="price-figure font-display text-3xl leading-none font-extrabold text-paper">
+              <span className="cart-total mono">
                 {formatArs(totals.totalArs)}
               </span>
             </div>
@@ -170,7 +170,7 @@ export default function CartClient({
             {totals.hasDiscount && (
               <div className="mt-3 flex items-baseline justify-between">
                 <span className="text-sm text-muted">Con transferencia</span>
-                <span className="price-figure font-display text-xl leading-none font-extrabold text-ok">
+                <span className="cart-total-transf mono">
                   {formatArs(totals.transferArs)}
                 </span>
               </div>
@@ -205,7 +205,7 @@ export default function CartClient({
           maxLength={80}
           autoComplete="name"
           enterKeyHint="next"
-          className="mt-1.5 h-12 w-full rounded-lg border border-line bg-surface px-4 text-base text-paper outline-none placeholder:text-muted focus:border-accent"
+          className="field"
           placeholder="Tu nombre"
         />
 
@@ -223,7 +223,7 @@ export default function CartClient({
           inputMode="tel"
           autoComplete="tel"
           enterKeyHint="done"
-          className="mt-1.5 h-12 w-full rounded-lg border border-line bg-surface px-4 text-base text-paper outline-none placeholder:text-muted focus:border-accent"
+          className="field"
           placeholder="11 5555-5555"
         />
 
@@ -237,14 +237,14 @@ export default function CartClient({
           onChange={(e) => setNote(e.target.value)}
           maxLength={500}
           rows={2}
-          className="mt-1.5 w-full resize-none rounded-lg border border-line bg-surface px-4 py-3 text-base text-paper outline-none placeholder:text-muted focus:border-accent"
+          className="field field-area"
           placeholder="Zona de entrega, horario, lo que quieras aclarar"
         />
 
         {error && (
           <p
             role="alert"
-            className="mt-4 rounded-lg border border-warn/40 bg-warn/10 px-4 py-3 text-sm text-paper"
+            className="form-error"
           >
             {error}
           </p>
@@ -261,7 +261,7 @@ export default function CartClient({
         <button
           type="submit"
           disabled={sending}
-          className="mt-6 flex h-14 w-full items-center justify-center gap-2 rounded-lg bg-[#25D366] text-base font-semibold text-white transition-transform active:scale-[0.99] disabled:opacity-60"
+          className="btn-send"
         >
           {sending ? (
             "Enviando pedido…"

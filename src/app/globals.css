@@ -30,7 +30,10 @@
   --color-amber-hi: #ffd98a; /* hover del acento */
   --color-on-amber: #150e00; /* texto sobre ámbar — blanco sobre ámbar da 2:1 */
   --color-ok: #5fd08a; /* stock disponible, ahorro por transferencia */
-  --color-warn: #f59e0b; /* "a pedido" — ver ⚠️ abajo */
+  /* Alerta y "a pedido". Terracota, NO el naranja de antes (#F59E0B): ese
+     era prácticamente el mismo color que el acento, así que un error y un
+     precio destacado se leían igual. 6,3:1 sobre --ink, pasa AA. */
+  --color-warn: #d97742;
 
   /* --- alias de compatibilidad ------------------------------------
      Los nombres viejos siguen resolviendo, así que las ~40 pantallas
@@ -53,12 +56,10 @@
   --spacing-header: 3.5rem; /* 56 px */
 }
 
-/* ⚠️ `--warn` (#F59E0B) y `--amber` (#F2B23C) son casi el mismo color, y
-   desde esta decisión el ámbar es el acento. Donde conviven —el badge de
-   "a pedido" al lado de un precio— el estado va a leerse como énfasis.
-   No se inventa un valor nuevo acá: en la pizarra de la home el estado
-   sale en `--ok` o en `--dim`, y `--warn` se resuelve de verdad en la
-   pasada de coherencia sobre listado, detalle, carrito y panel. */
+/* Resuelto en la pasada de coherencia (decisión 70): `--warn` se movió a
+   terracota. Antes era #F59E0B —a un paso del acento— y en una card el
+   badge de "a pedido" competía con el precio, que es justo lo que la
+   decisión 61 vino a evitar. */
 
 /* ---------------------------------------------------------------
    Base
@@ -123,15 +124,28 @@ button {
    Utilidades propias
    --------------------------------------------------------------- */
 
-/* Contenedor de las pantallas que NO son la home. Es exactamente el
-   `mx-auto max-w-5xl px-4` que antes vivía en el <main> del layout: se bajó
-   un nivel para que la home pueda tener franjas a sangre completa sin que
-   listado, detalle y carrito cambien un pixel. */
+/* Contenedor de las pantallas que no son la home.
+ *
+ * Usa el MISMO ancho y el mismo respiro lateral que el header, la nav de
+ * categorías, el footer y la home. Antes eran 1024 px contra los 1320 px de
+ * la chrome: a 1440 el encabezado sobresalía del catálogo y se veía como dos
+ * layouts pegados. */
 @utility page-wrap {
   width: 100%;
-  max-width: 64rem;
+  max-width: var(--maxw);
   margin-inline: auto;
-  padding-inline: 1rem;
+  padding-inline: var(--pad);
+}
+
+/* Columna angosta para lo que se LEE o se COMPLETA —ficha de producto y
+   carrito—, en vez de estirar un formulario a 1320 px. El ancho de la
+   chrome no cambia: lo que se acota es el contenido, que es una decisión
+   de lectura, no una inconsistencia. */
+@utility content-wrap {
+  width: 100%;
+  max-width: 46rem;
+  margin-inline: auto;
+  padding-inline: var(--pad);
 }
 
 /* La voz de "pizarra": monoespaciada y de ancho fijo por dígito.
@@ -229,28 +243,693 @@ button {
 .animation-delay-1 { animation-delay: 0.18s; }
 .animation-delay-2 { animation-delay: 0.32s; }
 
-/* `.hero-kicker` sigue vivo: lo usa la ficha de precio del detalle. */
-.hero-kicker {
-  display: inline-block;
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--color-accent);
+/* ===============================================================
+   CATÁLOGO Y DETALLE — misma lengua que la home (decisión 70)
+   Hasta acá estas pantallas seguían con el sistema anterior,
+   apenas repintado por los alias de token: mismos colores, otra
+   tipografía, otros radios y otros botones. Se navegaba de la home
+   al catálogo y se notaba el salto.
+   =============================================================== */
+
+/* --- encabezado del listado ---------------------------------------- */
+
+.catalog-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 22px;
 }
 
-/* ---------------------------------------------------------------
-   Detalle de producto — reemplaza el card blanco/naranja anterior.
-   --------------------------------------------------------------- */
+.catalog-title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-stretch: 80%;
+  font-size: clamp(26px, 6vw, 40px);
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: var(--color-bone);
+  margin: 10px 0 0;
+  text-wrap: balance;
+}
+
+.catalog-count {
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-dim);
+  margin: 8px 0 0;
+}
+
+.catalog-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+@media (min-width: 720px) {
+  .catalog-grid { grid-template-columns: repeat(3, 1fr); }
+}
+@media (min-width: 1040px) {
+  .catalog-grid { grid-template-columns: repeat(4, 1fr); }
+}
+
+/* --- paginación y vacío -------------------------------------------- */
+
+.pager {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 36px;
+  padding-top: 22px;
+  border-top: 1px solid var(--color-line);
+}
+.pager-count {
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  color: var(--color-dim);
+}
+
+.empty-state { padding: 56px 0; text-align: center; }
+.empty-title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-stretch: 80%;
+  font-size: clamp(20px, 5vw, 28px);
+  letter-spacing: -0.02em;
+  color: var(--color-bone);
+  margin: 0;
+  text-wrap: balance;
+}
+.empty-text {
+  max-width: 38ch;
+  margin: 10px auto 22px;
+  font-size: 14px;
+  color: var(--color-dim);
+}
+
+/* --- encabezado del detalle ---------------------------------------- */
 
 .detail-hero {
   position: relative;
   overflow: hidden;
   border: 1px solid var(--color-line);
+  border-radius: 14px;
+  padding: 14px 18px 22px;
+  margin: 22px 0 14px;
   background:
-    radial-gradient(140% 160% at 100% -20%, color-mix(in srgb, var(--color-accent) 24%, transparent), transparent 60%),
-    linear-gradient(180deg, var(--color-surface), var(--color-ink));
+    radial-gradient(140% 160% at 100% -20%, color-mix(in srgb, var(--color-amber) 14%, transparent), transparent 60%),
+    linear-gradient(180deg, var(--color-panel), var(--color-ink));
 }
+
+.detail-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 44px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-dim);
+  transition: color 0.25s;
+}
+.detail-back:hover,
+.detail-back:focus-visible { color: var(--color-amber); }
+
+.detail-sku { margin-top: 6px; }
+
+.detail-title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-stretch: 80%;
+  font-size: clamp(26px, 6.5vw, 44px);
+  line-height: 1;
+  letter-spacing: -0.035em;
+  color: var(--color-bone);
+  margin: 10px 0 0;
+  text-wrap: balance;
+}
+
+.detail-panel {
+  border: 1px solid var(--color-line);
+  border-radius: 14px;
+  background: var(--color-panel2);
+  padding: 18px;
+}
+
+.detail-sec { margin-top: 32px; }
+
+.detail-h2 {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-stretch: 80%;
+  font-size: clamp(18px, 3.5vw, 24px);
+  letter-spacing: -0.02em;
+  color: var(--color-bone);
+  margin: 0 0 12px;
+}
+
+/* --- galería -------------------------------------------------------- */
+
+/* Cuadrada y centrada, con techo: sin el `max-width`, en un escritorio la
+   foto se vuelve un cuadrado de 700 px y empuja el precio abajo de todo. */
+.gallery {
+  position: relative;
+  aspect-ratio: 1;
+  width: 100%;
+  max-width: 460px;
+  margin: 4px auto 0;
+  overflow: hidden;
+  border: 1px solid var(--color-line);
+  border-radius: 12px;
+  background: var(--color-ink);
+}
+
+.gallery-fallback {
+  display: flex;
+  height: 100%;
+  width: 100%;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 24px;
+  text-align: center;
+  background: linear-gradient(160deg, var(--color-panel), var(--color-ink));
+}
+.gallery-fallback-nm {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 1.15;
+  color: color-mix(in srgb, var(--color-dim) 85%, transparent);
+}
+
+.gallery-dots { display: flex; justify-content: center; gap: 2px; margin-top: 6px; }
+.gallery-dot-hit {
+  display: flex;
+  height: 44px;
+  width: 44px;
+  align-items: center;
+  justify-content: center;
+}
+.gallery-dot {
+  height: 6px;
+  width: 6px;
+  border-radius: 50%;
+  background: var(--color-line2);
+  transition: background-color 0.25s, width 0.25s;
+}
+.gallery-dot.is-on { background: var(--color-amber); width: 18px; border-radius: 100px; }
+
+/* --- selectores de variante ---------------------------------------- */
+
+.variant-group { margin-top: 24px; }
+
+.variant-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-dim);
+  margin: 0 0 10px;
+}
+.variant-value { color: var(--color-bone); }
+
+.variant-row { display: flex; flex-wrap: wrap; gap: 8px; }
+
+.swatch {
+  display: flex;
+  height: 44px;
+  width: 44px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 2px solid var(--color-line);
+  transition: border-color 0.25s, transform 0.25s;
+}
+.swatch:hover { border-color: var(--color-line2); }
+.swatch.is-active { border-color: var(--color-amber); transform: scale(1.05); }
+.swatch-fill {
+  height: 28px;
+  width: 28px;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.25);
+}
+
+/* Píldora de opción — capacidades, filtros y orden. Una sola forma para
+   todo lo que se elige, igual que `.cat-chip` en la home. */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 16px;
+  border: 1px solid var(--color-line2);
+  border-radius: 100px;
+  font-size: 13px;
+  color: var(--color-dim);
+  transition: color 0.25s, border-color 0.25s, background-color 0.25s;
+}
+.chip:hover { color: var(--color-bone); border-color: var(--color-line2); }
+.chip.is-active {
+  color: var(--color-on-amber);
+  background: var(--color-amber);
+  border-color: var(--color-amber);
+  font-weight: 600;
+}
+/* Sin stock: atenuada y tachada, NUNCA oculta — que el cliente vea que la
+   variante existe es parte de la venta. */
+.chip.is-out { text-decoration: line-through; opacity: 0.45; }
+
+/* --- ficha de precio (elemento firma) ------------------------------- */
+
+.price-card { padding: 20px; }
+
+.price-figure {
+  font-size: clamp(34px, 9vw, 48px);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: var(--color-bone);
+  margin: 10px 0 0;
+}
+
+.price-ref { margin: 10px 0 0; font-size: 12.5px; color: var(--color-dim); }
+
+.price-rule { height: 1px; background: var(--color-line); margin: 18px 0; }
+
+.price-badge-row { display: flex; align-items: center; gap: 8px; }
+.price-badge {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 100px;
+  background: color-mix(in srgb, var(--color-ok) 15%, transparent);
+  color: var(--color-ok);
+  padding: 3px 9px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+}
+.price-badge-l { font-size: 12px; color: var(--color-dim); }
+
+.price-transf {
+  font-size: clamp(24px, 6.5vw, 32px);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--color-ok);
+  margin: 10px 0 0;
+}
+.price-save { margin: 8px 0 0; font-size: 12.5px; color: var(--color-dim); }
+
+.price-pay { display: flex; align-items: flex-start; gap: 10px; font-size: 13.5px; color: var(--color-bone); margin: 0; }
+.price-pay-icon {
+  display: flex;
+  height: 24px;
+  width: 24px;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--color-amber) 15%, transparent);
+  color: var(--color-amber);
+}
+
+.price-compact {
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1;
+  color: var(--color-bone);
+  margin: 0;
+}
+.price-compact-transf { font-size: 12px; color: var(--color-ok); margin: 5px 0 0; }
+
+/* --- specs y franja de confianza ------------------------------------ */
+
+.specs { border: 1px solid var(--color-line); border-radius: 12px; overflow: hidden; margin: 0; }
+.spec-row {
+  display: flex;
+  gap: 16px;
+  padding: 12px 16px;
+  font-size: 13.5px;
+  border-top: 1px solid var(--color-line);
+}
+.spec-row:first-child { border-top: 0; }
+.spec-k { width: 40%; flex-shrink: 0; color: var(--color-dim); margin: 0; }
+.spec-v { color: var(--color-bone); margin: 0; font-size: 13px; }
+
+.trust {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  border: 1px solid var(--color-line);
+  border-radius: 14px;
+  background: var(--color-panel2);
+  padding: 20px;
+  margin: 0;
+  list-style: none;
+}
+.trust li { display: flex; align-items: flex-start; gap: 12px; }
+.trust-k { font-size: 13.5px; font-weight: 500; color: var(--color-bone); margin: 0; }
+.trust-v { font-size: 12.5px; color: var(--color-dim); margin: 3px 0 0; }
+
+@media (min-width: 720px) {
+  .trust { grid-template-columns: repeat(3, 1fr); }
+}
+
+/* Pie de transparencia: de dónde salió el peso. */
+.rate-note {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 22px;
+  padding-top: 14px;
+  border-top: 1px solid var(--color-line);
+  font-size: 10.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-dim);
+}
+.rate-note-v { color: var(--color-amber); }
+
+/* --- hoja inferior de filtros --------------------------------------- */
+
+.filter-badge {
+  display: inline-flex;
+  height: 20px;
+  min-width: 20px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 100px;
+  background: var(--color-amber);
+  color: var(--color-on-amber);
+  padding: 0 6px;
+  font-size: 11px;
+  font-weight: 600;
+  margin-left: 8px;
+}
+
+.sheet {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  max-height: 85dvh;
+  overflow-y: auto;
+  border-top: 1px solid var(--color-line2);
+  border-radius: 16px 16px 0 0;
+  background: linear-gradient(180deg, var(--color-panel), var(--color-ink) 40%);
+}
+
+.sheet-head {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--color-line);
+  background: var(--color-panel);
+}
+
+.sheet-title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-stretch: 80%;
+  font-size: 20px;
+  letter-spacing: -0.02em;
+  color: var(--color-bone);
+  margin: 0;
+}
+
+.sheet-foot {
+  position: sticky;
+  bottom: 0;
+  display: flex;
+  gap: 8px;
+  padding: 12px 16px;
+  border-top: 1px solid var(--color-line);
+  background: var(--color-ink);
+}
+
+/* --- botón de WhatsApp de la barra de acción ------------------------ */
+
+.btn-wa {
+  display: flex;
+  height: 48px;
+  width: 48px;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  border-radius: 100px;
+  background: #25d366;
+  color: #fff;
+  transition: transform 0.25s;
+}
+.btn-wa:active { transform: scale(0.96); }
+
+/* --- chrome: header, nav de categorías, footer ---------------------- */
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  border-bottom: 1px solid var(--color-line);
+  background: linear-gradient(180deg, rgba(7, 10, 14, 0.94), rgba(7, 10, 14, 0.74));
+  backdrop-filter: blur(14px);
+}
+
+.topbar-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 56px;
+  width: 100%;
+  max-width: var(--maxw);
+  margin-inline: auto;
+  padding-inline: var(--pad);
+}
+
+/* Lockup de la marca: versalitas del display, con el sufijo en ámbar.
+   Se resuelve por tipografía y no con un ícono — a 32 px un logo dibujado
+   no se lee (CLAUDE.md §1). */
+.brand-lockup {
+  display: inline-flex;
+  align-items: center;
+  height: 44px;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-stretch: 80%;
+  font-size: 19px;
+  letter-spacing: -0.02em;
+  color: var(--color-bone);
+  padding-right: 8px;
+}
+
+.cart-badge {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  display: flex;
+  height: 16px;
+  min-width: 16px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 100px;
+  background: var(--color-amber);
+  color: var(--color-on-amber);
+  padding-inline: 4px;
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.catnav {
+  border-bottom: 1px solid var(--color-line);
+  background: var(--color-ink);
+}
+.catnav-rail {
+  width: 100%;
+  max-width: var(--maxw);
+  margin-inline: auto;
+  padding: 12px var(--pad);
+}
+.catnav-chip { gap: 8px; padding-inline: 14px; font-size: 13px; }
+.catnav-icon { font-size: 17px; line-height: 1; }
+
+.site-footer {
+  border-top: 1px solid var(--color-line);
+  background: linear-gradient(180deg, var(--color-ink2), var(--color-ink));
+  margin-top: 56px;
+  padding-block: 44px 28px;
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 32px;
+  width: 100%;
+  max-width: var(--maxw);
+  margin-inline: auto;
+  padding-inline: var(--pad);
+}
+
+@media (min-width: 720px) {
+  .footer-grid { grid-template-columns: 1.4fr 1fr 1fr; }
+}
+
+.footer-brand { font-size: 22px; height: auto; padding: 0; }
+.footer-tagline { margin: 10px 0 0; font-size: 13.5px; color: var(--color-dim); max-width: 38ch; }
+
+.footer-notes {
+  margin: 16px 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--color-dim);
+}
+
+.footer-h {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--color-dim) 80%, transparent);
+  margin: 0 0 14px;
+}
+
+.footer-link {
+  display: block;
+  min-height: 34px;
+  font-size: 13.5px;
+  color: var(--color-dim);
+  margin-bottom: 8px;
+  transition: color 0.25s;
+}
+.footer-link:hover,
+.footer-link:focus-visible { color: var(--color-amber); }
+
+.footer-legal {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  max-width: var(--maxw);
+  margin: 32px auto 0;
+  padding: 18px var(--pad) 0;
+  border-top: 1px solid var(--color-line);
+  font-size: 10.5px;
+  letter-spacing: 0.06em;
+  color: color-mix(in srgb, var(--color-dim) 70%, transparent);
+}
+
+/* --- carrito -------------------------------------------------------- */
+
+.cart-title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-stretch: 80%;
+  font-size: clamp(26px, 6vw, 40px);
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: var(--color-bone);
+  margin: 0;
+}
+
+.cart-total {
+  font-size: clamp(26px, 7vw, 34px);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--color-bone);
+}
+.cart-total-transf {
+  font-size: 19px;
+  font-weight: 600;
+  line-height: 1;
+  color: var(--color-ok);
+}
+
+.qty {
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--color-line2);
+  border-radius: 100px;
+}
+.qty-btn {
+  display: flex;
+  height: 44px;
+  width: 44px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 100px;
+  font-size: 17px;
+  color: var(--color-bone);
+  transition: color 0.2s;
+}
+.qty-btn:disabled { color: color-mix(in srgb, var(--color-dim) 40%, transparent); }
+.qty-n { width: 32px; text-align: center; font-size: 13px; color: var(--color-bone); }
+
+.line-total { font-size: 16px; font-weight: 600; line-height: 1; color: var(--color-bone); margin: 0; }
+.line-unit { font-size: 11px; color: var(--color-dim); margin: 5px 0 0; }
+
+.field {
+  height: 48px;
+  width: 100%;
+  margin-top: 6px;
+  padding-inline: 16px;
+  border: 1px solid var(--color-line2);
+  border-radius: 12px;
+  background: var(--color-panel2);
+  /* 16 px o iOS hace zoom al enfocar y descuadra la pantalla entera. */
+  font-size: 16px;
+  color: var(--color-bone);
+  outline: none;
+  transition: border-color 0.25s;
+}
+.field::placeholder { color: var(--color-dim); }
+.field:focus { border-color: var(--color-amber); }
+.field-area { height: auto; padding-block: 12px; resize: none; }
+
+.form-error {
+  margin-top: 16px;
+  padding: 12px 16px;
+  border: 1px solid color-mix(in srgb, var(--color-warn) 40%, transparent);
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--color-warn) 10%, transparent);
+  font-size: 13.5px;
+  color: var(--color-bone);
+}
+
+/* El botón que cierra la venta. Verde WhatsApp y no ámbar: acá el color
+   dice a dónde lleva, no qué tan importante es. */
+.btn-send {
+  display: flex;
+  height: 56px;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 24px;
+  border-radius: 100px;
+  background: #25d366;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+  transition: transform 0.25s, opacity 0.25s;
+}
+.btn-send:active { transform: scale(0.99); }
+.btn-send:disabled { opacity: 0.6; }
 
 /* Barra de acción fija del detalle: translúcida y claramente separada.
  *
@@ -263,9 +942,9 @@ button {
  */
 .product-action-bar {
   z-index: 1000001;
-  background: linear-gradient(180deg, rgba(11, 13, 16, 0.92), rgba(11, 13, 16, 0.82));
+  background: linear-gradient(180deg, rgba(7, 10, 14, 0.94), rgba(7, 10, 14, 0.86));
   border-top-color: rgba(255, 255, 255, 0.06);
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(14px);
 }
 .product-action-bar .mx-auto { padding-top: 0.25rem; padding-bottom: 0.25rem; }
 .product-action-bar a,
@@ -344,46 +1023,8 @@ button {
   font-feature-settings: "tnum" 1;
 }
 
-/* ---------------------------------------------------------------
-   Categorías, cards y feedback táctil
-   --------------------------------------------------------------- */
-
-/* Chip de categoría activa en CategoryNav. */
-@utility shadow-accent {
-  box-shadow: 0 6px 20px -4px color-mix(in srgb, var(--color-accent) 55%, transparent);
-}
-
-/* Badge circular detrás del ícono en CategoryNav (idem, antes muerta). */
-.category-nav-badge {
-  width: 28px;
-  height: 28px;
-  border-radius: 999px;
-  background: color-mix(in srgb, var(--color-accent) 14%, transparent);
-}
-
-/* Cards del listado responden al toque como si fuera hover. */
-.group { transition: transform 0.12s ease, box-shadow 0.18s ease; }
-.group:active { transform: translateY(4px) scale(0.997); }
-
-/* USD rate: chip discreto, en tono --ok (dato "vivo"), con pulso suave. */
-.usd-rate {
-  display: inline-block;
-  padding: 6px 10px;
-  border-radius: 8px;
-  background: color-mix(in srgb, var(--color-ok) 10%, transparent);
-  color: var(--color-ok);
-  font-weight: 700;
-  font-size: 1rem;
-  animation: rate-breathe 3s ease-in-out infinite;
-}
-
+/* Sigue viva para el panel; en la ficha la reemplazó `.rate-note`. */
 .usd-value { font-feature-settings: "tnum" 1; font-variant-numeric: tabular-nums; }
-
-@keyframes rate-breathe {
-  0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-ok) 20%, transparent); }
-  50% { box-shadow: 0 8px 20px -4px color-mix(in srgb, var(--color-ok) 25%, transparent); }
-  100% { box-shadow: 0 0 0 0 transparent; }
-}
 
 /* Product description: larger, higher contrast and more readable on mobile */
 .product-description {
@@ -470,13 +1111,15 @@ button {
 }
 
 .metric-value {
-  font-family: var(--font-display);
-  /* El salto de escala: 44 px en un viewport de 390. */
-  font-size: clamp(2.25rem, 11vw, 2.75rem);
-  font-weight: 800;
-  line-height: 0.92;
+  /* Mono, como todo número del proyecto desde la decisión 61: el panel se
+     refresca solo y un dígito de ancho variable movería la tarjeta entera. */
+  font-family: var(--font-mono);
+  /* El salto de escala: 40 px en un viewport de 390. */
+  font-size: clamp(2rem, 10vw, 2.5rem);
+  font-weight: 600;
+  line-height: 0.95;
   letter-spacing: -0.03em;
-  color: var(--color-paper);
+  color: var(--color-bone);
   font-variant-numeric: tabular-nums;
   font-feature-settings: "tnum" 1;
 }
@@ -513,11 +1156,12 @@ button {
 }
 
 .rate-value {
-  font-family: var(--font-display);
-  font-size: clamp(2.5rem, 13vw, 3.25rem);
-  font-weight: 800;
-  line-height: 0.9;
-  letter-spacing: -0.035em;
+  font-family: var(--font-mono);
+  font-size: clamp(2.25rem, 12vw, 3rem);
+  font-weight: 600;
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+  color: var(--color-amber);
   font-variant-numeric: tabular-nums;
   font-feature-settings: "tnum" 1;
 }
@@ -537,13 +1181,85 @@ button {
 }
 
 /* El input de precio es el control principal de la pantalla: se le da peso
-   tipográfico en vez de un borde más grueso. */
+   tipográfico en vez de un borde más grueso. Mono, como el precio que va a
+   terminar viendo el comprador. */
 .price-input {
-  font-family: var(--font-display);
-  font-size: 1.125rem;
-  font-weight: 700;
+  font-family: var(--font-mono);
+  font-size: 1.0625rem;
+  font-weight: 600;
   font-variant-numeric: tabular-nums;
   font-feature-settings: "tnum" 1;
+}
+
+/* --- primitivas del panel ------------------------------------------ */
+
+.admin-h2 {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-stretch: 80%;
+  font-size: 20px;
+  letter-spacing: -0.02em;
+  color: var(--color-bone);
+  margin: 0;
+}
+
+.admin-hint {
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-dim);
+}
+
+.admin-note,
+.admin-alert {
+  border-radius: 14px;
+  border: 1px solid var(--color-line);
+  background: var(--color-panel2);
+  padding: 16px;
+  font-size: 13.5px;
+  color: var(--color-dim);
+  margin: 0;
+}
+.admin-alert {
+  border-color: color-mix(in srgb, var(--color-warn) 40%, transparent);
+  background: color-mix(in srgb, var(--color-warn) 10%, transparent);
+  color: var(--color-warn);
+}
+
+.admin-status {
+  margin-top: 12px;
+  border-radius: 12px;
+  padding: 8px 12px;
+  font-size: 13px;
+  border: 1px solid transparent;
+}
+.admin-status.is-ok {
+  border-color: color-mix(in srgb, var(--color-ok) 40%, transparent);
+  background: color-mix(in srgb, var(--color-ok) 10%, transparent);
+  color: var(--color-ok);
+}
+.admin-status.is-bad {
+  border-color: color-mix(in srgb, var(--color-warn) 40%, transparent);
+  background: color-mix(in srgb, var(--color-warn) 10%, transparent);
+  color: var(--color-warn);
+}
+
+.admin-prod-nm {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: -0.01em;
+  color: var(--color-bone);
+  margin: 0;
+}
+
+.admin-flag {
+  flex-shrink: 0;
+  border-radius: 100px;
+  border: 1px solid color-mix(in srgb, var(--color-warn) 45%, transparent);
+  padding: 2px 8px;
+  font-size: 10px;
+  color: var(--color-warn);
 }
 
 /* Confirmación de guardado. Un pulso de 900 ms y se va: el dueño necesita
