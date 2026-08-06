@@ -105,7 +105,7 @@ Todo esto es **post-MVP** (§10). Si aparece en una respuesta antes de la fase 7
 | Estilos | Tailwind CSS v4 | $0 | Velocidad, tokens en CSS vars |
 | Base de datos | Supabase (Postgres, free tier) | $0 | Ya lo manejo. Auth + Storage + DB en uno |
 | Imágenes | Supabase Storage | $0 | 1 GB alcanza para ~300 productos optimizados |
-| Hosting | **Netlify** free | $0 | Ver nota ⚠️ |
+| Hosting | **Vercel** Hobby | $0 | Ver nota ⚠️ |
 | Estado carrito | Zustand + localStorage | $0 | Sin backend, sin sesión |
 | Checkout | Link `wa.me` con mensaje prellenado | $0 | Cero fricción, cero PCI, es como ya venden |
 | Cotización | dolarapi.com (blue, venta) | $0 | Pública, sin API key. Devuelve el último valor disponible, así que un lunes da el cierre del último día hábil |
@@ -113,7 +113,10 @@ Todo esto es **post-MVP** (§10). Si aparece en una respuesta antes de la fase 7
 
 ### ⚠️ Notas de infraestructura que hay que tener presentes
 
-- **Vercel Hobby no permite uso comercial.** Para la demo del portfolio da igual, pero el día que se le entrega a un cliente que vende, o se pasa a Netlify (su free tier sí permite uso comercial) o se paga Vercel Pro. Se elige **Netlify desde el día uno** para no migrar después.
+- **⚠️ Vercel Hobby no permite uso comercial.** No es solo "no cobrar en el sitio": las Fair Use Guidelines cuentan como comercial también *que te paguen por hacerlo o por hostearlo*, además de publicidad, afiliados o donaciones. Para la demo de portfolio —sin pagos, sin ads, sin cliente— entra dentro de lo personal. **El día que esta plantilla se instancie para un comercio que vende, ese deploy tiene que salir de Hobby**: Vercel Pro (USD 20 por usuario/mes) o un host cuyo free tier sí habilite uso comercial (Netlify o Cloudflare Workers). Es un cambio de plan, no de código.
+- **Región de las funciones.** Supabase está en `sa-east-1` (São Paulo). Si las funciones de Vercel quedan en la región por defecto de EE. UU., cada render con ISR y cada llamada a `/api/*` se va a Virginia y vuelve a São Paulo. Verificar en el proyecto de Vercel que la región sea `gru1` (São Paulo) antes de medir Lighthouse: contra el objetivo de 3 s con datos móviles de §1, ese salto se nota.
+- **Variables de entorno que hay que cargar en el proyecto** (sin las dos primeras el build sale sin catálogo y sin precios): `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, `AGENT_API_SECRET`.
+- `netlify.toml` sigue en el repo del deploy anterior. Vercel lo ignora, así que no rompe nada, pero es config muerta: o se borra o se deja anotado que no manda.
 - **Supabase free pausa el proyecto tras ~7 días de inactividad.** Antes de cualquier demo hay que verificar que esté despierto. Mitigación de F6: un workflow de n8n que hace un `select` trivial cada 48 h.
 - Límites del free tier a respetar: 500 MB de DB, 1 GB de Storage, 5 GB de egreso. Con imágenes en WebP a ≤150 KB no se llega ni cerca.
 
@@ -269,7 +272,7 @@ Que exista un esqueleto desplegado.
 - Tokens de diseño en CSS vars + `brand.config.ts`
 - Layout base: header con buscador, nav de categorías, footer, botón flotante de WhatsApp
 - `manifest.json` + íconos para instalación en pantalla de inicio
-- Repo en GitHub + deploy automático a Netlify
+- Repo en GitHub + deploy automático a Vercel
 
 **Criterio de salida:** la URL se abre en un teléfono real, se agrega a la pantalla de inicio y arranca a pantalla completa.
 **Trampa a evitar:** no maquetar productos todavía. Solo el chasis.
@@ -373,8 +376,8 @@ Ruta crítica: F2 → F3 → F4. Si el tiempo aprieta, F5 se reduce a **una sola
 
 | Fase | Estado | Fecha | Notas |
 |---|---|---|---|
-| F0 Definición | 🟢 Terminada | 2026-08-03 | CLAUDE.md v1.3.0 + SPEC.md v1.0.0. Falta: crear cuenta de Netlify (bloquea F1) |
-| F1 Fundaciones | 🟡 En curso | 2026-08-03 | Código escrito: chasis, tokens, PWA, `netlify.toml`. **Falta verificar:** `npm install` + build + prueba en teléfono real. Sigue faltando la cuenta de Netlify |
+| F0 Definición | 🟢 Terminada | 2026-08-03 | CLAUDE.md v1.3.0 + SPEC.md v1.0.0 |
+| F1 Fundaciones | 🟡 En curso | 2026-08-06 | Código escrito: chasis, tokens, PWA. Hosting: **Vercel** (decisión 69) — falta conectar el repo, cargar las tres envs de §2 y fijar la región en `gru1`. `netlify.toml` quedó como config muerta. **Falta verificar:** build en el proveedor + prueba en teléfono real |
 | F2 Datos | 🟢 Terminada | 2026-08-04 | Proyecto `iphonex10` en sa-east-1. 7 tablas + vista + RLS + bucket. Seed: 12 categorías, 42 productos, 88 colores, 46 capacidades. Tipos y `pricing.ts` con casos verificados |
 | F3 Catálogo | 🟡 En curso | 2026-08-05 | Home, listado con filtros, detalle con variantes, SEO e ISR. Precio en pesos con cotización automática del blue (`lib/exchange.ts`). Fotos reales cargadas: 9 imágenes en `public/productos/` repartidas entre los 6 iPhones, más el banner propio del hero. Sistema visual unificado (decisión #45): sacado el tema naranja/blanco que solo vivía en el hero y el detalle, tipografía nueva. **Falta:** prueba en teléfono real (incluye el rediseño visual, sin verificar todavía), revisar que cada foto esté en el modelo correcto, y fotos para las otras 11 categorías. En F4 se corrigieron dos errores de lint que venían de acá: la variante ya no se sincroniza con `setState` dentro de efectos, se **deriva** de lo que tocó el usuario + la URL + el default |
 | F4 Carrito | 🟡 En curso | 2026-08-05 | Store Zustand persistido (guarda USD, no ARS), drawer, `/carrito`, `POST /api/orders` con revalidación de precios contra la base, RPC `create_order` y `lib/whatsapp.ts`. Probado de punta a punta en el navegador: pedido guardado con `usd_rate_snapshot`, código `IPX-0001`, mensaje armado y carrito vaciado. Pedidos de prueba borrados y secuencia reseteada. **Falta:** prueba en teléfono real con datos móviles |
@@ -391,7 +394,7 @@ Leyenda: ⚪ pendiente · 🟡 en curso · 🟢 terminada · 🔴 bloqueada
 
 | # | Decisión | Motivo | Fecha |
 |---|---|---|---|
-| 01 | Netlify en lugar de Vercel | El free tier de Vercel no habilita uso comercial | 2026-08-03 |
+| 01 | ~~Netlify en lugar de Vercel~~ · **revertida por la 69** | El free tier de Vercel no habilita uso comercial | 2026-08-03 |
 | 02 | Sin pasarela de pago en el MVP | Comisiones y fricción; el cliente ya cierra por WhatsApp | 2026-08-03 |
 | 03 | Precios en USD + cotización única | Es el dolor #1 del rubro en Argentina | 2026-08-03 |
 | 03b | **El ARS es el precio publicado; el USD es referencia** | Es lo que el comprador paga y lo que la normativa argentina espera ver exhibido. La estabilidad se resuelve por otro lado: automatizando la cotización, no escondiendo el peso | 2026-08-04 |
@@ -402,7 +405,7 @@ Leyenda: ⚪ pendiente · 🟡 en curso · 🟢 terminada · 🔴 bloqueada
 | 08 | La demo se muestra desde celular — condición dura | Define el orden de diseño y el presupuesto de peso de toda la app | 2026-08-03 |
 | 09 | Panel admin también mobile-first | El momento fuerte de la demo (cambiar cotización) tiene que darse en el teléfono | 2026-08-03 |
 | 10 | PWA instalable | Abrir a pantalla completa sin barra del navegador cambia por completo la percepción de "es una app" | 2026-08-03 |
-| 11 | Demo como link externo en Netlify, no embebida | Un iframe rompe la PWA, el QR y la pantalla completa. La restricción dura de §1 manda | 2026-08-03 |
+| 11 | Demo como link externo, no embebida | Un iframe rompe la PWA, el QR y la pantalla completa. La restricción dura de §1 manda | 2026-08-03 |
 | 12 | Cuotas como **texto de confianza**, no como precio calculado | Se comunica "crédito en cuotas y hasta 2 tarjetas" sin calcular coeficientes. Cero mantenimiento, cero riesgo de publicar un número mal | 2026-08-03 |
 | 13 | Hasta 3 imágenes por producto | ~40 × 3 × 150 KB ≈ 18 MB. Cómodo dentro del free tier y suficiente para que la galería no se vea vacía | 2026-08-03 |
 | 14 | Variantes de color y capacidad, ejes independientes | La capacidad define el precio, el color define las imágenes. Evita una matriz de 9 filas por producto imposible de mantener desde un celular | 2026-08-03 |
@@ -460,6 +463,7 @@ Leyenda: ⚪ pendiente · 🟡 en curso · 🟢 terminada · 🔴 bloqueada
 | 66 | En la pizarra el "Desde $ X" es un `+` con leyenda al pie | Encontrado midiendo el render: `Desde $ 1.770.000` son 17 caracteres en una columna de 118 px y el número salía cortado como `DESDE $ 1.77`. Un precio cortado a la mitad no es un problema de diseño, es información falsa. El `+` dice lo mismo en dos caracteres. Los nombres largos se cortan con `…`, que se lee como decisión y no como bug | 2026-08-06 |
 | 67 | El `<main>` del layout deja de acotar el ancho; cada pantalla se acota con `page-wrap` | La home necesita franjas a sangre completa (marcas, promesas) y un contenedor de 1320 px. Romper hacia afuera con márgenes negativos desde adentro de un `max-w-5xl` es la receta del scroll horizontal que §1 prohíbe. `page-wrap` son exactamente las clases que estaban en el layout, bajadas un nivel: listado, detalle y carrito no cambian un pixel | 2026-08-06 |
 | 68 | Del demo **no** se portan el sparkline de la cotización ni la celda "Comparar dos modelos" | El sparkline se llenaba con `Math.random()` y no hay histórico del blue en ninguna tabla: dibujar una curva inventada del dólar es exactamente lo que prohíbe la decisión 34. La comparación de modelos es una pantalla que no existe, y una home que ofrece una función que no está es una promesa rota antes de entrar | 2026-08-06 |
+| 69 | **El hosting pasa a Vercel** y se revierte la decisión 01 | Decisión del dueño. Lo que la 01 quiso evitar sigue siendo cierto —Hobby prohíbe uso comercial, y su definición incluye cobrar por hacer o por hostear el sitio—, pero esta instancia es una pieza de portfolio: no cobra, no tiene ads y no hay cliente. A cambio se gana la plataforma de primera parte de Next 16: ISR, `revalidatePath` on-demand (decisión 54), Server Actions, `next/image` y el proxy de `/admin` andan sin adaptador ni configuración. La restricción no desaparece, se corre de lugar: queda anotada en §2 para el día que la plantilla se le entregue a un comercio que vende, y ese día es un cambio de plan o de host, no de código — nada del repo depende del proveedor | 2026-08-06 |
 ---
 
 ## 10. Preguntas abiertas

@@ -49,18 +49,20 @@ Los íconos de la PWA están en `public/icons/`. Se regeneran con cualquier edit
 
 ---
 
-## Deploy en Netlify
+## Deploy en Vercel
 
 1. Subir el repo a GitHub.
-2. En Netlify: *Add new site → Import an existing project* y elegir el repo.
-3. Netlify detecta Next.js solo. `netlify.toml` ya fija el comando de build, la versión de Node y el plugin oficial.
-4. Instalar el plugin si Netlify no lo agrega automáticamente:
-   ```bash
-   npm i -D @netlify/plugin-nextjs
+2. En Vercel: *Add New… → Project* y elegir el repo. Detecta Next.js solo; no hace falta `vercel.json`.
+3. Cargar las tres variables de entorno en *Settings → Environment Variables*. Sin las dos primeras el build sale sin catálogo y sin precios:
    ```
+   NEXT_PUBLIC_SUPABASE_URL
+   NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY
+   AGENT_API_SECRET
+   ```
+4. En *Settings → Functions*, fijar la región en **`gru1` (São Paulo)**. La base está en `sa-east-1`: con la región por defecto de EE. UU., cada render con ISR y cada `/api/*` se va a Virginia y vuelve.
 5. Una vez asignada la URL, actualizar `brand.url` en `brand.config.ts` — de ahí salen las OG images y el `metadataBase`.
 
-> Se usa Netlify y no Vercel porque el free tier de Vercel no permite uso comercial (CLAUDE.md §9, decisión 01).
+> ⚠️ El plan Hobby **no habilita uso comercial**, y su definición incluye cobrar por hacer o por hostear el sitio. Como pieza de portfolio está bien; el día que esta plantilla se instancie para un comercio que vende, ese deploy tiene que pasar a Vercel Pro o a un host cuyo free tier sí lo permita (Netlify, Cloudflare Workers). Es un cambio de plan, no de código: nada del repo depende del proveedor. Ver CLAUDE.md §2 y decisión 69.
 
 ---
 
@@ -68,7 +70,7 @@ Los íconos de la PWA están en `public/icons/`. Se regeneran con cualquier edit
 
 ```
 brand.config.ts        identidad de la instancia — el único archivo a editar por marca
-netlify.toml           build, headers de cache y plugin de Next
+netlify.toml           config del deploy anterior — Vercel la ignora (decisión 69)
 src/
   app/
     (shop)/            tienda pública: home, productos, detalle, carrito
