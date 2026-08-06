@@ -43,11 +43,17 @@ export const brand = {
     tiktok: "",
   },
 
-  /** Tokens de color. Se reflejan como CSS vars en globals.css. */
+  /**
+   * Tokens de color. Se reflejan como CSS vars en globals.css.
+   *
+   * El acento ámbar no es solo estética: además de la tienda, pinta el
+   * widget de Retell y la barra de estado de la PWA. Si acá quedara el azul
+   * viejo, el chat de Bart seguiría siendo azul sobre una tienda ámbar.
+   */
   colors: {
-    accent: "#3B82F6",
+    accent: "#F2B23C",
     /** Color de la barra de estado del navegador y de la PWA. */
-    theme: "#0B0D10",
+    theme: "#070A0E",
   },
 
   /**

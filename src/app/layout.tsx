@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { IBM_Plex_Sans, Bricolage_Grotesque } from "next/font/google";
+import { IBM_Plex_Sans, IBM_Plex_Mono, Bricolage_Grotesque } from "next/font/google";
 import brand from "@/brand.config";
 import "./globals.css";
 
@@ -19,6 +19,25 @@ const body = IBM_Plex_Sans({
 const display = Bricolage_Grotesque({
   subsets: ["latin"],
   variable: "--ff-display",
+  display: "swap",
+});
+
+/**
+ * Mono — la voz de "pizarra" (decisión 61).
+ *
+ * Todo número del sitio (cotización, precios, capacidades, contadores) sale
+ * en esta fuente con `tabular-nums`, así al actualizarse no corre el layout
+ * ni un pixel. Es lo que hace que la pizarra se lea como una lista de local
+ * y no como una tabla web.
+ *
+ * A diferencia de las otras dos, IBM Plex Mono NO es variable: hay que
+ * declarar los pesos o next/font no sabe cuáles bajar. Es la excepción a la
+ * decisión 20, no una contradicción — son tres archivos de ~14 KB cada uno.
+ */
+const mono = IBM_Plex_Mono({
+  subsets: ["latin"],
+  weight: ["400", "500", "600"],
+  variable: "--ff-mono",
   display: "swap",
 });
 
@@ -67,7 +86,10 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="es-AR" className={`${body.variable} ${display.variable}`}>
+    <html
+      lang="es-AR"
+      className={`${body.variable} ${display.variable} ${mono.variable}`}
+    >
       <body>{children}</body>
     </html>
   );

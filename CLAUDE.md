@@ -126,17 +126,24 @@ El referente (XTECH) es funcional pero genérico: azul corporativo, carrusel, gr
 **Tokens base** (se sobreescriben por marca en `brand.config.ts`):
 
 ```
---ink:        #0B0D10   fondo profundo
---surface:    #14181D   cards
---line:       #262D36   bordes hairline
---paper:      #F5F7FA   texto principal
---muted:      #8A94A3   secundario
---accent:     #3B82F6   acción (configurable por cliente)
---ok:         #22C55E   stock disponible
---warn:       #F59E0B   a pedido
+--ink:        #070A0E   fondo base
+--ink2:       #0B1017   segundo plano / franjas
+--panel:      #111823   panel elevado
+--panel2:     #0E141D   superficie de cards
+--line:       #1C2634   hairline en reposo
+--line2:      #2A3644   hairline en hover/foco
+--bone:       #E6E2D7   texto principal (hueso, no blanco puro)
+--dim:        #828E9C   secundario — 5,6:1 sobre --panel2, pasa AA
+--amber:      #F2B23C   ACENTO ÚNICO — 10,6:1 sobre --ink
+--amber-hi:   #FFD98A   hover del acento
+--on-amber:   #150E00   texto sobre ámbar (blanco sobre ámbar da 2:1)
+--ok:         #5FD08A   stock disponible / ahorro por transferencia
+--warn:       #F59E0B   a pedido — ⚠️ choca con --amber, ver decisión 61
 ```
 
-- **Tipografía:** display condensada de peso alto para precios y títulos de producto; body neutral y legible. El precio es el elemento tipográfico protagonista — en este rubro la gente entra a ver el número.
+Los nombres viejos (`--surface`, `--paper`, `--muted`, `--accent`) siguen vivos como alias en `globals.css` para que las pantallas ya escritas cambien de color sin tocar una clase. Se retiran en la pasada de coherencia posterior a la home.
+
+- **Tipografía:** display condensada de peso alto para precios y títulos de producto; body neutral y legible; **mono para todo número**. El precio es el elemento tipográfico protagonista — en este rubro la gente entra a ver el número.
 - **Elemento firma:** la **ficha de precio**. Precio grande **en pesos**, debajo el USD de referencia en tipografía chica, y luego el precio de transferencia con su descuento. Debajo, una línea sobria de medios de pago (crédito en cuotas · hasta 2 tarjetas). Es el bloque que resuelve el dolor principal del rubro y tiene que ser lo más lindo de la página.
 - **Selectores de variante:** en el detalle, debajo de la galería. Color como fila de círculos de 44 px con el color real y el nombre debajo del seleccionado; capacidad como fila de píldoras (`128 GB` · `256 GB` · `512 GB`). Ambos cambian la ficha de precio y la galería **sin recargar la página**. Las opciones sin stock se muestran atenuadas y tachadas, no se ocultan — que el cliente vea que existe es parte de la venta.
 - **Mobile-first sin excusas.** El 85% del tráfico va a venir de un link de Instagram abierto en un celular.
@@ -372,6 +379,7 @@ Ruta crítica: F2 → F3 → F4. Si el tiempo aprieta, F5 se reduce a **una sola
 | F3 Catálogo | 🟡 En curso | 2026-08-05 | Home, listado con filtros, detalle con variantes, SEO e ISR. Precio en pesos con cotización automática del blue (`lib/exchange.ts`). Fotos reales cargadas: 9 imágenes en `public/productos/` repartidas entre los 6 iPhones, más el banner propio del hero. Sistema visual unificado (decisión #45): sacado el tema naranja/blanco que solo vivía en el hero y el detalle, tipografía nueva. **Falta:** prueba en teléfono real (incluye el rediseño visual, sin verificar todavía), revisar que cada foto esté en el modelo correcto, y fotos para las otras 11 categorías. En F4 se corrigieron dos errores de lint que venían de acá: la variante ya no se sincroniza con `setState` dentro de efectos, se **deriva** de lo que tocó el usuario + la URL + el default |
 | F4 Carrito | 🟡 En curso | 2026-08-05 | Store Zustand persistido (guarda USD, no ARS), drawer, `/carrito`, `POST /api/orders` con revalidación de precios contra la base, RPC `create_order` y `lib/whatsapp.ts`. Probado de punta a punta en el navegador: pedido guardado con `usd_rate_snapshot`, código `IPX-0001`, mensaje armado y carrito vaciado. Pedidos de prueba borrados y secuencia reseteada. **Falta:** prueba en teléfono real con datos móviles |
 | F5 Admin | 🟡 En curso | 2026-08-05 | Login con Supabase Auth + `src/proxy.ts` protegiendo `/admin`. Panel en una sola pantalla: métricas del día (visitas, fichas vistas, clicks de WhatsApp, consultas al asistente) con selector Hoy/7/30 días, gráfico de visitas y ranking de más mirados; abajo la cotización y el editor de precios en USD con el peso calculado en vivo. Tabla `analytics_events` + RPC `track_event` (público, validado) y `dashboard_metrics` (solo autenticado). Guardar revalida la tienda entera al toque, sin esperar el ISR. Verificado: el guard redirige, el tracking escribe desde el navegador real, RLS le tapa la tabla a anon y `dashboard_metrics` le da 403. **Falta:** crear el usuario de Auth en el dashboard de Supabase (sin eso no se puede entrar), probar el panel logueado, prueba en teléfono real, y el resto de F5 (CRUD de productos, editor de variantes, pantalla de pedidos, resto de config) |
+| Rediseño "Pizarra" | 🟡 En curso | 2026-08-06 | Rama `feat/rediseno-pizarra`, referencia en `design/`. **Hecho (fase 1 del brief):** tokens ámbar + hueso en `globals.css` con alias de los nombres viejos, IBM Plex Mono, `brand.config.ts`, `manifest.json`. Decisiones 61 a 63. **Falta:** componentes de la home (pizarra split-flap, bento, marquee, pasos, promesas), `GET /api/rate` para el polling de cotización, copy nuevo, y la pasada de coherencia sobre listado, detalle, carrito y panel. Sin verificar todavía en teléfono real |
 | F6 Pulido | ⚪ Pendiente | — | |
 | F7 Post-MVP | ⚪ Congelado | — | |
 
@@ -444,6 +452,9 @@ Leyenda: ⚪ pendiente · 🟡 en curso · 🟢 terminada · 🔴 bloqueada
 | 58 | El día de las métricas es el día en **Argentina**, no en UTC | Con UTC, todo lo que pasa entre las 21 y la medianoche cae en "mañana": el dueño mira el panel a las 22, ve cero visitas y cierra la tienda pensando que no entró nadie. El RPC calcula los bordes con `America/Argentina/Buenos_Aires` y los usa como `timestamptz`, así que sigue entrando por el índice | 2026-08-05 |
 | 59 | El panel usa el mismo sistema visual que la tienda, con otra jerarquía | Se abre desde el mismo teléfono, a los treinta segundos de haber estado mirando el catálogo: un tema aparte se leería como otra aplicación. Lo que cambia es qué manda — acá el dato, allá el precio. La cotización se gana el mismo anillo de degradé que la ficha de precio porque marca el mismo concepto. Es la lección de la decisión 45 aplicada antes de cometer el error | 2026-08-05 |
 | 60 | En el panel, `.admin-reveal` **no** va sobre la sección de precios | Adentro vive el buscador `position: sticky`, y un ancestro con `transform` —que es lo que deja una animación con `fill-mode: both`— se vuelve su bloque contenedor y lo despega del borde. Misma trampa de la decisión 51, esta vez con sticky en lugar de fixed. Por lo mismo, la atmósfera del panel es un `background` del contenedor y no un pseudo-elemento con `z-index: -1` | 2026-08-05 |
+| 61 | **El acento pasa de azul a ámbar** y el sistema visual se llama "Pizarra": ink más profundo, papel hueso, mono en todo número | El azul de la decisión 45 era el default de cualquier tienda y competía con el verde de stock: dos señales frías peleando en la misma card. El ámbar es el color de una lista de precios escrita en un local, que es exactamente lo que el producto es. No es solo repintar: el hueso (`#E6E2D7`) baja el brillo del texto sobre fondo profundo y la mono con `tabular-nums` hace que un precio que se actualiza no corra el layout. Los nombres de token viejos quedan como alias, así el cambio entra sin reescribir 40 pantallas. Medido antes de escribirlo: `--dim` sobre `--panel2` da 5,57:1 y el ámbar sobre `--ink` 10,6:1, los dos pasan AA | 2026-08-06 |
+| 62 | El acento vive en `brand.config.ts`, así que el widget de Retell y la barra de la PWA cambian con él | Es la decisión 07 cobrando: el color no se escribió en ningún componente, así que repintar la tienda entera fueron dos líneas. Si el ámbar hubiera estado hardcodeado, el chat de Bart seguiría siendo azul sobre una tienda ámbar y nadie se daría cuenta hasta la demo | 2026-08-06 |
+| 63 | IBM Plex Mono se carga con `weight` declarado — la excepción a la decisión 20 | Las otras dos son variable fonts y por eso no llevan `weight`. Plex Mono no lo es: sin declarar 400/500/600, `next/font` no sabe qué bajar. Son tres archivos de ~14 KB, dentro del presupuesto de 500 KB de §1 | 2026-08-06 |
 ---
 
 ## 10. Preguntas abiertas

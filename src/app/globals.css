@@ -1,30 +1,64 @@
 @import "tailwindcss";
 
 /* ---------------------------------------------------------------
-   Tokens de diseño — CLAUDE.md §3
+   Tokens de diseño — CLAUDE.md §3 (decisión 61)
    Los valores viven acá; brand.config.ts define cuáles se pisan
    por marca (por ahora, solo --accent y --theme).
+
+   Paleta "Pizarra": ink más profundo, papel hueso en vez de blanco
+   y ÁMBAR como acento único. El azul anterior competía con el verde
+   de stock y no leía como "lista de precios de local".
    --------------------------------------------------------------- */
 
 @theme {
-  --color-ink: #0b0d10;
-  --color-surface: #14181d;
-  --color-line: #262d36;
-  --color-paper: #f5f7fa;
-  --color-muted: #8a94a3;
-  --color-accent: #3b82f6;
-  --color-ok: #22c55e;
-  --color-warn: #f59e0b;
+  /* --- superficies ------------------------------------------------ */
+  --color-ink: #070a0e; /* fondo base */
+  --color-ink2: #0b1017; /* fondo de franja / segundo plano */
+  --color-panel: #111823; /* panel elevado */
+  --color-panel2: #0e141d; /* superficie de cards */
+
+  /* --- bordes ----------------------------------------------------- */
+  --color-line: #1c2634; /* hairline en reposo */
+  --color-line2: #2a3644; /* hairline en hover/foco */
+
+  /* --- texto ------------------------------------------------------ */
+  --color-bone: #e6e2d7; /* principal — hueso, NO blanco puro */
+  --color-dim: #828e9c; /* secundario — 5,6:1 sobre panel2, pasa AA */
+
+  /* --- acento y estado -------------------------------------------- */
+  --color-amber: #f2b23c; /* ACENTO ÚNICO — 10,6:1 sobre ink */
+  --color-amber-hi: #ffd98a; /* hover del acento */
+  --color-on-amber: #150e00; /* texto sobre ámbar — blanco sobre ámbar da 2:1 */
+  --color-ok: #5fd08a; /* stock disponible, ahorro por transferencia */
+  --color-warn: #f59e0b; /* "a pedido" — ver ⚠️ abajo */
+
+  /* --- alias de compatibilidad ------------------------------------
+     Los nombres viejos siguen resolviendo, así que las ~40 pantallas
+     que ya usan `bg-surface` o `text-paper` cambian de color sin
+     tocar una sola clase. Se van retirando en la pasada de coherencia
+     que viene después de la home. */
+  --color-surface: var(--color-panel2);
+  --color-paper: var(--color-bone);
+  --color-muted: var(--color-dim);
+  --color-accent: var(--color-amber);
 
   /* Las --ff-* las inyecta next/font desde layout.tsx.
      Ojo: NO llamarlas --font-display / --font-sans o se auto-referencian
      con las claves de Tailwind y la cascada se rompe en silencio. */
   --font-display: var(--ff-display), "Arial Narrow", system-ui, sans-serif;
   --font-sans: var(--ff-body), system-ui, -apple-system, sans-serif;
+  --font-mono: var(--ff-mono), ui-monospace, "SF Mono", monospace;
 
   /* Altura del header fijo. Se usa para el scroll-margin de las anclas. */
   --spacing-header: 3.5rem; /* 56 px */
 }
+
+/* ⚠️ `--warn` (#F59E0B) y `--amber` (#F2B23C) son casi el mismo color, y
+   desde esta decisión el ámbar es el acento. Donde conviven —el badge de
+   "a pedido" al lado de un precio— el estado va a leerse como énfasis.
+   No se inventa un valor nuevo acá: en la pizarra de la home el estado
+   sale en `--ok` o en `--dim`, y `--warn` se resuelve de verdad en la
+   pasada de coherencia sobre listado, detalle, carrito y panel. */
 
 /* ---------------------------------------------------------------
    Base
@@ -89,6 +123,15 @@ button {
    Utilidades propias
    --------------------------------------------------------------- */
 
+/* La voz de "pizarra": monoespaciada y de ancho fijo por dígito.
+   Va en TODO lo que sea número —cotización, precios, capacidades,
+   contadores— para que al actualizarse no se corra ni un pixel. */
+@utility mono {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
 /* Área táctil mínima de 44 px sin obligar a que el elemento se vea de 44 px. */
 @utility tap {
   position: relative;
@@ -129,7 +172,7 @@ button {
     top: 0.5rem;
     padding: 0.5rem 0.75rem;
     background: var(--color-accent);
-    color: white;
+    color: var(--color-on-amber);
     border-radius: 6px;
   }
 }
@@ -229,8 +272,8 @@ button {
 }
 
 .hero-cta {
-  background: linear-gradient(135deg, var(--color-accent), #60a5fa);
-  color: #fff;
+  background: linear-gradient(135deg, var(--color-accent), var(--color-amber-hi));
+  color: var(--color-on-amber);
   box-shadow: 0 12px 28px -8px color-mix(in srgb, var(--color-accent) 65%, transparent);
   transition: transform 0.15s ease, box-shadow 0.2s ease;
 }
